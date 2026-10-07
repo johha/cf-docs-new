@@ -28,5 +28,5 @@
     "js-yaml": "^4.1.0",
     "node-html-parser": "^6.1.13"
   },
-  "engines": { "node": ">=20.0" }
+  "engines": { "node": ">=24.0" }
 }

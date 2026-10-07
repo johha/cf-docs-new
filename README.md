@@ -64,9 +64,11 @@ These produce build warnings but do not fail the build (`onBrokenAnchors` is
 not set to `throw`).
 
 **9 commercial-only variables render empty:**
-Variables such as `vars.product_full` and `vars.product_abbrev` exist only in
+Variables such as `vars.garden_runc` and `vars.ops_manager` exist only in
 the commercial/PCF product book, not in the OSS `docs-book-cloudfoundry`.
-Affected pages render those slots as empty strings. The 9 affected vars are
+Affected pages render those slots as empty strings. The 9 affected vars
+(`garden_runc`, `asg_note`, `vm_note`, `best_practices_link`, `external_lb`,
+`pcf_pools`, `ops_manager`, `compliance_links`, `app_svc_links`) are also
 listed in `migration-report.txt`.
 
 **11 HTML tables kept as-is:**
