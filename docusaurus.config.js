@@ -1,0 +1,49 @@
+// @ts-check
+import {themes as prismThemes} from 'prism-react-renderer';
+
+/** @type {import('@docusaurus/types').Config} */
+const config = {
+  title: 'Cloud Foundry Documentation',
+  tagline: 'Documentation to help you deploy and manage Cloud Foundry',
+  favicon: 'img/favicon.ico',
+  url: 'https://cloudfoundry.github.io',
+  baseUrl: '/docs-next/',
+  organizationName: 'cloudfoundry',
+  projectName: 'docs-next',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
+  presets: [
+    ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({
+      docs: { sidebarPath: './sidebars.js', routeBasePath: '/', exclude: ['superpowers/**'] },
+      blog: false,
+      theme: { customCss: './src/css/custom.css' },
+    })],
+  ],
+  themes: [
+    ['@easyops-cn/docusaurus-search-local',
+      /** @type {import('@easyops-cn/docusaurus-search-local').PluginOptions} */ ({
+        hashed: true,
+        indexDocs: true,
+        indexBlog: false,
+        docsRouteBasePath: '/',
+      })],
+  ],
+  themeConfig: /** @type {import('@docusaurus/preset-classic').ThemeConfig} */ ({
+    navbar: {
+      title: 'Cloud Foundry',
+      logo: { alt: 'Cloud Foundry', src: 'img/logo_org.png' },
+      items: [{ type: 'docSidebar', sidebarId: 'conceptsSidebar', position: 'left', label: 'Concepts' }],
+    },
+    footer: {
+      style: 'dark',
+      links: [{ title: 'Community', items: [{ label: 'Get Involved', href: 'https://www.cloudfoundry.org/community/' }] }],
+      copyright: `Cloud Foundry Documentation`,
+    },
+    prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
+  }),
+};
+
+export default config;
+
+
+

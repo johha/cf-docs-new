@@ -1,0 +1,33 @@
+{
+  "name": "cf-docs-new",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "gen:vars": "node scripts/gen-vars.mjs",
+    "gen:sidebar": "node scripts/gen-sidebar.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "gen:all": "npm run gen:vars && npm run migrate && npm run gen:sidebar"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.6.0",
+    "@docusaurus/preset-classic": "^3.6.0",
+    "@easyops-cn/docusaurus-search-local": "^0.46.0",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.6.0",
+    "js-yaml": "^4.1.0",
+    "node-html-parser": "^6.1.13"
+  },
+  "engines": { "node": ">=20.0" }
+}
