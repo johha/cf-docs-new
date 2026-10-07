@@ -26,7 +26,12 @@ export function rewriteNoteBlocks(text) {
 }
 
 export function stripHeadingAnchors(text) {
-  return text.replace(/^(#{1,6})\s*<a id=['"][^'"]*['"]><\/a>\s*/gm, '$1 ');
+  // Convert `## <a id='foo'></a> Heading text` → `## Heading text {#foo}`
+  // Preserves the id so in-page anchor links still resolve.
+  return text.replace(
+    /^(#{1,6})\s*<a id=['"]([^'"]+)['"]><\/a>\s*(.*?)\s*$/gm,
+    (_, hashes, id, rest) => `${hashes} ${rest} {#${id}}`
+  );
 }
 
 // Out-of-scope CF doc sections not present in this PoC.

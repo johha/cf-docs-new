@@ -8,8 +8,7 @@ import {vars} from '@site/src/data/vars';
 This topic tells you about the concepts related to
 GrootFS disk space management in {vars.app_runtime_first}.
 
-## GrootFS stores
-
+## GrootFS stores {#store}
 GrootFS is the container root filesystem management component for Garden.
 A container root filesystem or _rootfs_ is often referred to as an **image**.
 
@@ -20,8 +19,7 @@ Individual container root filesystems are provided via OverlayFS mounts.
 
 Supplying GrootFS with an already formatted XFS volume for its' store is not yet supported for BOSH-controlled deployments.
 
-### Garbage collection behavior in GrootFS stores
-
+### Garbage collection behavior in GrootFS stores {#garbage_coll}
 GrootFS stores are initialized to use the entirety of `/var/vcap/data`. If the `reserved_space_for_other_jobs_in_mb` is not set high enough,
 or if there are many images with few shared volumes, the store can use up all available space.
 
@@ -30,8 +28,7 @@ that a small reserved space is kept free for other jobs.
 GrootFS only tries to garbage collect when that threshold is reached.
 However, if all the rootfs layers are actively in use by images, then garbage collection cannot occur and that space is used up.
 
-## Volumes
-
+## Volumes {#volumes}
 Underlying layers in rootfs images are known as `volumes` in GrootFS.
 They are read-only and their changesets are layered together through an **OverlayFS** mount
 to create the root filesystems for containers.
@@ -49,8 +46,7 @@ On disk, the read-write layer for each container can be found at `/var/vcap/data
 When GrootFS calls on the built-in XFS quota tooling to get disk usage for a container,
 it takes into account data written to those `diff` directories and not the data in the read-only volumes.
 
-### Volume Cleanup Example
-
+### Volume Cleanup Example {#volume_cleanup}
 When `clean` is called in GrootFS, any layers that are not being used by an existing rootfs are deleted from the store.
 The cleanup only takes into account the `volumes` folders in the store.
 
@@ -75,8 +71,7 @@ but not layer-1 because Image A still uses that layer.
 
 {vars.grootfs_disk_usage_link}
 
-## Additional information
-
+## Additional information {#additional_info}
 For more information, see the following sections of `garden-runc-release`:
 
 * [overlay-xfs-setup](https://github.com/cloudfoundry/garden-runc-release/blob/b4a44c5cabb1570eaeb25b158823cfbd97ae530c/jobs/garden/templates/bin/overlay-xfs-setup#L23-L46)

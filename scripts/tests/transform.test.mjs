@@ -30,8 +30,12 @@ test('rewriteNoteBlocks handles compound classes', () => {
   assert.ok(warn.includes(':::warning'), `expected :::warning, got: ${warn}`);
 });
 
-test('stripHeadingAnchors', () => {
-  assert.equal(t.stripHeadingAnchors("## <a id='about'></a> About"), '## About');
+test('stripHeadingAnchors converts to Docusaurus {#id} syntax', () => {
+  assert.equal(t.stripHeadingAnchors("## <a id='about'></a> About"), '## About {#about}');
+  assert.equal(t.stripHeadingAnchors('## <a id="staging-running"></a> Staging and running ASGs'), '## Staging and running ASGs {#staging-running}');
+  assert.equal(t.stripHeadingAnchors('#### <a id="deep"></a> Deep heading'), '#### Deep heading {#deep}');
+  // Heading with no anchor is unchanged
+  assert.equal(t.stripHeadingAnchors('## No anchor here'), '## No anchor here');
 });
 
 test('rewriteInternalLinks strips .html only for internal', () => {

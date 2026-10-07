@@ -18,8 +18,7 @@ To route app-to-app traffic through the Gorouter with platform-enforced, identit
 :::
 
 
-## Architecture
-
+## Architecture {#architecture}
 Container-to-container networking integrates with [Garden-runC] in a Diego deployment. The CF Networking Release includes several core components, as well as swappable components. For more information about Garden-runC, see [Garden-runC](./architecture/garden#garden-runc) in _Garden_. For more information about Diego, see [Diego Components and Architecture](./diego/diego-architecture). For more information about the CF Networking release, see [CF Networking Release](https://github.com/cloudfoundry-incubator/cf-networking-release) on GitHub.
 
 To understand the components and how they work, see the following diagram and tables.
@@ -27,8 +26,7 @@ The diagram highlights {vars.app_runtime_abbr} components in blue and green. The
 
 ![The c2c architecture diagram](/img/concepts/c2c-arch.png)
 
-### Core components
-
+### Core components {#core}
 The container-to-container networking BOSH release has the following core components:
 
 <table>
@@ -63,8 +61,7 @@ The container-to-container networking BOSH release has the following core compon
 </tbody>
 </table>
 
-### Swappable components
-
+### Swappable components {#swap}
 <table>
 <thead>
   <tr>
@@ -97,8 +94,7 @@ The container-to-container networking BOSH release has the following core compon
 </tbody>
 </table>
 
-## App instance communication
-
+## App instance communication {#app-comm}
 The following diagram illustrates how app instances communicate in a deployment with container-to-container networking enabled. In this example, the operator creates two policies to regulate the flow of traffic between **App A**, **App B**, and **App C**.
 
 * Allow traffic from **App A** to **App B**
@@ -108,8 +104,7 @@ If traffic and its direction is not explicitly allowed, it is denied. For exampl
 
 ![Post Container-to-Container Networking](/img/concepts/post-c2c.png)
 
-### Overlay network
-
+### Overlay network {#overlay-network}
 Container-to-container networking uses an overlay network to manage communication between app instances.
 
 Overlay networks are not externally routable, and traffic sent between containers does not exit the overlay. You can use the same overlay network range for different {vars.app_runtime_abbr} deployments in your environment.
@@ -145,26 +140,22 @@ Cells.
 Traffic to app containers from the Gorouter or from app containers to external services uses
 Diego Cell IP addresses and NAT, not the overlay network.
 
-### Policies
-
+### Policies {#policies}
 Enabling container-to-container networking for your deployment allows you to create policies for communication between app instances. The container-to-container networking feature also provides a unique IP address to each app container and provides direct IP reachability between app instances.
 
 The policies you create specify a source app, destination app, protocol, and port so that app instances can communicate directly without going through the Gorouter, a load balancer, or a firewall. Container-to-container networking supports UDP and TCP, and you can configure policies for multiple ports. These policies apply immediately without having to restart the app.
 
 Additionally, policies use and and track the GUIDs of the apps. The policies continue to work when apps redeploy, or if they crash and Diego places them in a new container. Pushing a brand new app requires a new policy, but not updates to an existing app because an app always retains its GUID.
 
-## App service discovery
-
+## App service discovery {#service-discovery}
 The {vars.app_runtime_abbr} platform supports DNS-based service discovery that lets apps find each other's internal addresses. For example, a front end app instance can use the service discovery mechanism to establish communications with a back end app instance. To set up and use app service discovery, see [App service discovery](https://docs.cloudfoundry.org/devguide/deploy-apps/cf-networking.html#discovery) in _Configuring container-to-container networking_.
 
 Container-to-container app service discovery does not provide client-side load balancing or circuit-breaking, and it does not apply to `cf marketplace` services or require app binding. It just lets apps publish service endpoints to each other, unbrokered and unmediated.
 
-## Alternative network stacks
-
+## Alternative network stacks {#alt-stack}
 The BOSH release that contains the container-to-container networking feature that is composed of a plug-in network stack. Advanced users or third party vendors can integrate a different network stack. For more information about third party plug-ins, see [3rd Party Plug-in Development for Container Networking](https://github.com/cloudfoundry/cf-networking-release/blob/develop/docs/11-3rd-party.md) in the CF Networking Release repository on GitHub.
 
-## Container-to-container networking versus ASGs
-
+## Container-to-container networking versus ASGs {#c2cvsasg}
 Both app security groups (ASGs) and container-to-container networking policies affect traffic from app instances. The following table highlights differences between ASGs and container-to-container networking policies.
 
 
@@ -177,8 +168,7 @@ Both app security groups (ASGs) and container-to-container networking policies a
 | Policies take affect | Immediately | Immediately |
 
 
-## Securing container-to-container traffic
-
+## Securing container-to-container traffic {#securing-traffic}
 The platform provides a TLS encapsulation for container-to-container network traffic.
 
 To utilize TLS capabilities, the client application can connect to port 61443 on the destination application over HTTPS. Traffic to application

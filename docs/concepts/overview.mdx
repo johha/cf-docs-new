@@ -23,8 +23,7 @@ The following diagram illustrates the layers of a typical technology stack, comp
 
 [View a larger version of this diagram](https://github.com/cloudfoundry/docs-cloudfoundry-concepts/blob/master/images/comparison.png?raw=true).
 
-## About {vars.app_runtime_abbr}
-
+## About {vars.app_runtime_abbr} {#about}
 This section describes why {vars.app_runtime_abbr} is an industry-standard cloud platform.
 
 Not all cloud platforms are created equal. Some have limited language and framework support, lack key app services, or restrict deployment to a single cloud.
@@ -43,12 +42,10 @@ As an industry-standard cloud platform, {vars.app_runtime_abbr} offers the follo
 
 {vars.app_runtime_abbr} is ideal for anyone interested in removing the cost and complexity of configuring infrastructure for their apps.
 
-## How {vars.app_runtime_abbr} Works
-
+## How {vars.app_runtime_abbr} Works {#how-it-works}
 To flexibly serve and scale apps online, {vars.app_runtime_abbr} has subsystems that perform specialized functions. The following sections describe how some of these main subsystems work.
 
-### Load balancing
-
+### Load balancing {#balances}
 This section describes how {vars.app_runtime_abbr} handles load balancing.
 
 Clouds balance their processing loads over multiple machines, optimizing for efficiency and resilience against point failure. A {vars.app_runtime_abbr} installation accomplishes this using the following components:
@@ -59,12 +56,10 @@ Clouds balance their processing loads over multiple machines, optimizing for eff
 
 - The **Gorouter** routes incoming traffic from the world to the VMs that are running the apps that the traffic demands, usually working with a customer-provided load balancer. For more information, see [{vars.app_runtime_abbr} Routing Architecture](./cf-routing-architecture).
 
-### Running apps
-
+### Running apps {#apps-anywhere}
 This section describes the VMs that run your apps in {vars.app_runtime_abbr} and how the platform packages your apps to run on these VMs.
 
-#### VMs in {vars.app_runtime_abbr}
-
+#### VMs in {vars.app_runtime_abbr} {#cf-vms}
 {vars.app_runtime_abbr} designates the following types of VMs:
 
 - **Component VMs** make up the platform's infrastructure.
@@ -74,8 +69,7 @@ Within {vars.app_runtime_abbr}, the Diego system distributes the hosted app load
 
 For more information, see [Diego Components and Architecture](./diego/diego-architecture).
 
-#### Distributing apps
-
+#### Distributing apps {#cf-apps}
 To meet demand, multiple host VMs run duplicate instances of the same app. This means that apps must be portable. {vars.app_runtime_abbr} distributes app source code to VMs with everything the VMs need to compile and run the apps locally.
 
 {vars.app_runtime_abbr} includes the following with your app's source code:
@@ -91,8 +85,7 @@ For more information, see:
 - [Buildpacks](https://docs.cloudfoundry.org/buildpacks/index.html)
 - [How Apps Are Staged](./how-applications-are-staged)
 
-### Organizing users and workspaces
-
+### Organizing users and workspaces {#organize}
 This section describes how {vars.app_runtime_abbr} organizes users and workspaces.
 
 {vars.app_runtime_abbr} manages user accounts through two User Account and Authentication (UAA) servers, which support access control as OAuth2 services and can store user information internally, or connect to external user stores through LDAP or SAML.
@@ -118,8 +111,7 @@ The following table describes what the two UAA servers do:
 
 For more information, see [Orgs, Spaces, Roles, and Permissions](./roles).
 
-### Storing resources
-
+### Storing resources {#resources}
 The following table describes where {vars.app_runtime_abbr} stores resources:
 
 <table><thead>
@@ -141,8 +133,7 @@ The following table describes where {vars.app_runtime_abbr} stores resources:
   </tr></tbody>
 </table>
 
-### Communicating with components
-
+### Communicating with components {#communicate}
 This section describes how {vars.app_runtime_abbr} components communicate with one another.
 
 {vars.app_runtime_abbr} components communicate in the following ways:
@@ -156,8 +147,7 @@ BOSH DNS allows deployments to continue communicating with VMs even when the VMs
 
 For more information about BOSH DNS, see [Native DNS Support](https://bosh.io/docs/dns/) in the BOSH documentation.
 
-### Monitoring and Analyzing
-
+### Monitoring and Analyzing {#monitor}
 This section describes logging in {vars.app_runtime_abbr}.
 
 {vars.app_runtime_abbr} generates system logs from {vars.app_runtime_abbr} components and app logs from hosted apps. As {vars.app_runtime_abbr} runs, its component and host VMs generate logs and metrics. {vars.app_runtime_abbr} apps also typically generate logs.
@@ -178,8 +168,7 @@ The Loggregator system aggregates the component metrics and app logs into a stru
 
 For more information, see <a href="https://docs.cloudfoundry.org/loggregator/architecture.html">Loggregator Architecture</a>.
 
-### Using services
-
+### Using services {#services}
 This section describes how you can use services with your apps on {vars.app_runtime_abbr}.
 
 Typical apps depend on free or metered services such as databases or third-party APIs. To incorporate these into an app:

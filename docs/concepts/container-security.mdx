@@ -19,8 +19,7 @@ The sections in this topic provide the following information:
 
 * [Container Security](#security) describes how {vars.app_runtime_abbr} secures containers by running app instances in unprivileged containers and by hardening them.
 
-## Container mechanics
-
+## Container mechanics {#mechanics}
 Each instance of an app deployed to {vars.app_runtime_abbr} runs within its own self-contained environment, a Garden container. This container isolates processes, memory, and the filesystem using operating system features and the characteristics of the virtual and physical infrastructure where {vars.app_runtime_abbr} is deployed. For more information about Garden containers, see [Garden](./architecture/garden).
 
 {vars.app_runtime_abbr} achieves container isolation by namespacing kernel resources that would otherwise be shared. The intended level of isolation is set to prevent multiple containers that are present on the same host from detecting each other. Every container includes a private root filesystem, which includes a Process ID (PID), namespace, network namespace, and mount namespace.
@@ -38,8 +37,7 @@ Resource control is managed using Linux control groups. Associating each contain
 {vars.app_runtime_abbr} does not support a RedHat Enterprise Linux OS stemcell. This is due to an
 inherent security issue with the way RedHat handles user namespacing and container isolation.
 
-### CPU
-
+### CPU {#cpu}
 Each container is placed in its own cgroup. Cgroups make each container use a fair share of CPU relative to the other containers. This prevents oversubscription on the host VM where one or more containers hog the CPU and leave no computing resources to the others.
 
 The way cgroups allocate CPU time is based on shares. CPU shares do not work as direct percentages of total CPU usage. Instead, a share is relative in a given time window to the shares held by the other containers. The total amount of CPU that can be overall divided among the cgroups is what is left by other processes that might run in the host VM.
@@ -145,13 +143,11 @@ If P3 finishes or becomes idle, then P2 can consume all the CPU, as another reca
 
 In summary, the cgroup shares are the minimum guaranteed CPU share that the process can get. This limitation becomes effective only when processes on the same host compete for resources.
 
-## Inbound and outbound traffic from {vars.app_runtime_abbr}
-
+## Inbound and outbound traffic from {vars.app_runtime_abbr} {#networking}
 Learn about container networking and how {vars.app_runtime_abbr} admins customize
 container network traffic rules for their deployment.
 
-### Networking overview
-
+### Networking overview {#net-overview}
 A host VM has a single IP address. If you configure the deployment with the cluster on a VLAN, as {vars.company_name} recommends, then all traffic goes through the following levels of network address translation, as shown in the following diagram:
 
 * **Inbound** requests flow from the load balancer through the router to the host Diego Cell, then into the app container. The router determines which app instance receives each request.
@@ -172,8 +168,7 @@ Cloud Foundry vLAN (on right side):
 
   - App container response goes to NAT
 
-### Network traffic rules
-
+### Network traffic rules {#config-traffic}
 Admins configure rules to govern container network traffic. This is how containers send traffic outside of {vars.app_runtime_abbr} and receive traffic from outside, the Internet. These rules can prevent system access from external networks and between internal components and determine if apps can establish connections over the virtual network interface.
 
 Admins configure these rules at two levels:
@@ -182,8 +177,7 @@ Admins configure these rules at two levels:
 
 * Container-to-container networking policies determine app-to-app communication. Within {vars.app_runtime_abbr}, apps can communicate directly with each other, but the containers are isolated from outside {vars.app_runtime_abbr}. {vars.container_network_link}
 
-## Container security
-
+## Container security {#security}
 {vars.app_runtime_abbr} secures containers through the following measures:
 
 * Running app instances in unprivileged containers by default. For more information about app instances, see [Types](#types).
@@ -192,8 +186,7 @@ Admins configure these rules at two levels:
 
 * {vars.app_sec_groups_default} {vars.app_sec_groups_link}
 
-### Types
-
+### Types {#types}
 Garden has the following container types:
 
 * unprivileged
@@ -203,8 +196,7 @@ Currently, {vars.app_runtime_abbr} runs all app instances and staging tasks in u
 
 <ConfigManifest />
 
-### Hardening
-
+### Hardening {#hardening}
 {vars.app_runtime_abbr} mitigates against container breakout and denial of service attacks in
 the following ways:
 

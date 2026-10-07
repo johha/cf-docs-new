@@ -16,13 +16,11 @@ high availability in several ways, such as running VMs in multiple availability 
 This topic provides you guidance on configuring
 your {vars.app_runtime_abbr} deployment for high availability.
 
-## Components of high availability deployments
-
+## Components of high availability deployments {#high-availability}
 You can use availability zones, external load balancers, and
 external blob storage to ensure high availability for your deployment.
 
-### Availability zones
-
+### Availability zones {#azs}
 Availability Zones (AZs) are locations where public cloud services offer data centers.
 
 You can assign and scale components in multiple AZs to help maintain high availability through redundancy. To configure sufficient redundancy, deploy
@@ -32,8 +30,7 @@ Always use an odd number of AZs. This ensures that your deployment remains avail
 
 For example, a deployment with three AZs stays available when one AZ is unavailable. A deployment with five AZs stays available when two AZs are unavailable.
 
-### External load balancers
-
+### External load balancers {#external-lbs}
 External load balancers distribute traffic coming from the internet to your internal network.
 
 To ensure high availability for production environments, use a highly available customer provided external load balancing solution that does the following:
@@ -48,8 +45,7 @@ To ensure high availability for production environments, use a highly available 
 
 {vars.external_lb}
 
-### External blob storage
-
+### External blob storage {#blobstore}
 Blobs are large binary files, such as PDFs or images. To store blobs for high availability, use external storage such as Amazon S3 or an S3-compatible
 service.
 
@@ -61,8 +57,7 @@ contact <a href="https://www.vmware.com/support/services.html">Support.</a>
 
 {vars.collector_singleton}
 
-## Scaling platform capacity
-
+## Scaling platform capacity {#vert-and-horiz}
 You can scale platform capacity in the following ways:
 
 * **Vertical scaling:** Add memory and disk to each VM.
@@ -74,8 +69,7 @@ The type of apps you host on {vars.app_runtime_abbr} determines whether you scal
 For more information about scaling apps and maintaining app uptime, see [Scaling an app using cf scale](https://docs.cloudfoundry.org/devguide/deploy-apps/cf-scale.html) and [Using
 Blue-Green Deployment to Reduce Downtime and Risk](https://docs.cloudfoundry.org/devguide/deploy-apps/blue-green.html)
 
-### Scaling vertically
-
+### Scaling vertically {#vert-scaling}
 Scaling vertically means adding memory and disk to your component VMs.
 
 To scale vertically, allocate and maintain the following:
@@ -86,8 +80,7 @@ To scale vertically, allocate and maintain the following:
 
 * Free space to handle one AZ going down if deploying in multiple AZs.
 
-### Scaling horizontally
-
+### Scaling horizontally {#horiz-scaling}
 Scaling horizontally means increasing the number of instances of VMs that run a functional component of a system.
 
 You can horizontally scale most {vars.app_runtime_abbr} component VMs to multiple instances for high availability.
@@ -95,14 +88,12 @@ You can horizontally scale most {vars.app_runtime_abbr} component VMs to multipl
 You must also distribute the instances of components across different AZs to minimize downtime during ongoing operation, product updates, and platform
 upgrades. For more information about using AZs, see [Availability Zones](#azs).
 
-## Recommended instance counts for high availability
-
+## Recommended instance counts for high availability {#instance-counts}
 {vars.scaling_ert}
 
 <OssScaleTable />
 
-## Infrastructure for component scaling
-
+## Infrastructure for component scaling {#supporting-scaling}
 The ability to scale component VMs is important for high availability. To scale component VMs, you must make sure that the surrounding infrastructure of your
 deployment supports VM scaling.
 
@@ -115,8 +106,7 @@ Learn about the infrastructure required to support scaling component VMs for hig
 
 {vars.om_resurrector_text}
 
-### Resource pools
-
+### Resource pools {#resource-pools}
 Each IaaS has different ways of limiting resource consumption for scaling VMs. Consult with your IaaS administrator to ensure additional VMs and related
 resources, like IPs and storage, are available to scale.
 
@@ -124,8 +114,7 @@ For more information about configuring your resource pools according to the requ
 
 {vars.pcf_pools}
 
-### Databases
-
+### Databases {#databases}
 For database services deployed outside {vars.app_runtime_abbr}, use the high availability features included with your infrastructure. Also, configure
 backup and restore where possible. {vars.scaling_ert_db}
 

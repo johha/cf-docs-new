@@ -14,8 +14,7 @@ Diego is a self-healing container management system that attempts to keep the co
 
 You can submit, update, and retrieve the desired number of Tasks and LRPs using the Bulletin Board System (BBS) API. For more information, see the [BBS Server](https://github.com/cloudfoundry/bbs) repository on GitHub.
 
-## Learning how Diego runs an app
-
+## Learning how Diego runs an app {#diagram}
 The following sections describe how Diego handles a request to run an app.
 This is only one of the processes that happen in Diego. For example, running an app assumes the app has
 already been staged.
@@ -39,8 +38,7 @@ The architecture discussed in the following steps includes the following high le
 
 {vars.vm_note}
 
-### Step 1: Receiving the request to run an app
-
+### Step 1: Receiving the request to run an app {#step-1}
 Cloud Controller passes requests to run apps to the Diego BBS, which stores information about the request
 in its database.
 
@@ -48,8 +46,7 @@ in its database.
 
 [//]: https://docs.google.com/drawings/d/1p2ShJ8yJ3gVzKBh1sw1b_O8qMASXMzC37r2MU3L4xmI/edit?usp=sharing
 
-### Step 2: Passing the request to the auctioneer process
-
+### Step 2: Passing the request to the auctioneer process {#step-2}
 The BBS contacts the Auctioneer to create an auction based on the desired resources for the app.
 It references the information stored in its database.
 
@@ -57,8 +54,7 @@ It references the information stored in its database.
 
 [//]: https://docs.google.com/drawings/d/1P_aSBm6fyHeqJyZ-8epM_CePS3u8O_GLTSzW-g1-32U/edit?usp=sharing
 
-### Step 3: Performing the auction
-
+### Step 3: Performing the auction {#step-3}
 Through an auction, the Auctioneer finds a Diego Cell to run the app on.
 The Rep job on the Diego Cell accepts the auction request.
 
@@ -66,8 +62,7 @@ The Rep job on the Diego Cell accepts the auction request.
 
 [//]: https://docs.google.com/drawings/d/1ug2RVCiW_fW4U6vH6dvG-sn6-Om9gXHTymnPBiZI8Hk/edit?usp=sharing
 
-### Step 4: Creating the container and running the app
-
+### Step 4: Creating the container and running the app {#step-4}
 The in process Executor creates a Garden container in the Diego Cell.
 Garden downloads the droplet that resulted from the staging process and runs the app in the container.
 
@@ -75,16 +70,14 @@ Garden downloads the droplet that resulted from the staging process and runs the
 
 [//]: https://docs.google.com/drawings/d/1IPLl2bKmR9iYOhjXvlRZJSvCeCnoaX_zqARdt04Yjv4/edit?usp=sharing
 
-### Step 5: Emitting a route for the app
-
+### Step 5: Emitting a route for the app {#step-5}
 The `route-emitter` process emits a route registration message to Gorouter for the new app running on the Diego Cell.
 
 ![Block diagram](/img/concepts/oss-diego-architecture-5.png)
 
 [//]: https://docs.google.com/drawings/d/17ZilpDcvpwh1Ne0SZvQjsCylftuQZSguAHHVJB88Ijs/edit?usp=sharing
 
-### Step 6: Sending logs to the Loggregator
-
+### Step 6: Sending logs to the Loggregator {#step-6}
 Loggregator agent forwards app logs, errors, and metrics to the {vars.app_runtime_abbr} Loggregator.
 
 For more information, see [App Logging in {vars.app_runtime_abbr}](https://docs.cloudfoundry.org/devguide/deploy-apps/streaming-logs.html).
@@ -93,8 +86,7 @@ For more information, see [App Logging in {vars.app_runtime_abbr}](https://docs.
 
 [//]: https://docs.google.com/drawings/d/1ChpsoNXR-zHC2n9bPz2H5qdRvkDfg_M4I8sVr-Vy3So/edit?usp=sharing
 
-## Diego components
-
+## Diego components {#components}
 The following table describes the jobs that are part of the {vars.app_runtime_abbr} Diego BOSH release.
 
 <table>
@@ -150,8 +142,7 @@ The following table describes the jobs that are part of the {vars.app_runtime_ab
 </tbody>
 </table>
 
-### Additional information
-
+### Additional information {#additional-info-diego}
 The following resources provide more information about Diego components:
 
 * The [Diego Release](https://github.com/cloudfoundry/diego-release) repository on GitHub.
@@ -170,8 +161,7 @@ The following resources provide more information about Diego components:
 
 * [App SSH](./ssh-conceptual), [App SSH Overview](https://docs.cloudfoundry.org/devguide/deploy-apps/app-ssh-overview.html), and the [Diego SSH](https://github.com/cloudfoundry-incubator/diego-ssh) repository on GitHub.
 
-## Maximum recommended Diego Cells
-
+## Maximum recommended Diego Cells {#maximum-diego-cells}
 The maximum recommended Diego Cells is 250 Cells for each {vars.app_runtime_abbr} deployment. By default, there is a hard limit of 256 addresses for vSphere deployments that use Silk for networking. This hard limit is described in the [Silk Release documentation](https://github.com/cloudfoundry/cf-networking-release/blob/develop/docs/09-large-deployments.md) on GitHub.
 
 The default CIDR address block for the overlay network is 10.255.0.0/16. Each Diego Cell requires a subnet, and subnets (0-255) for each Diego Cell are allocated out of this network.
@@ -181,8 +171,7 @@ The default CIDR address block for the overlay network is 10.255.0.0/16. Each Di
 * Changes to the foundation can take a long time, potentially days or weeks depending on the `max-in-flight` value. For example, if there is a certificate expiring in a week, there might not be enough time to rotate the certificates before expiry. {vars.best_practices_link}
 * A single foundation still has single points of failure, such as the certificates on the platform. The RAM that 250 Diego Cells provides is enough to host many business-critical apps.
 
-## Components from other releases
-
+## Components from other releases {#components-ther}
 The following table describes jobs that interact closely with Diego but are not part of the Diego {vars.app_runtime_abbr} BOSH release.
 
 <table>
@@ -221,8 +210,7 @@ The following table describes jobs that interact closely with Diego but are not 
 	</tbody>
 </table>
 
-### App lifecycle binaries
-
+### App lifecycle binaries {#app-lifecycles}
 The following platform-specific binaries deploy apps and govern their lifecycle:
 
 * The **Builder**, which stages a {vars.app_runtime_abbr} app. The Builder runs as a Task on every staging request. It performs static analysis on the app code and does any necessary pre-processing before the app is first run.
@@ -231,14 +219,12 @@ The following platform-specific binaries deploy apps and govern their lifecycle:
 
 * The **Healthcheck**, which performs a status check on running {vars.app_runtime_abbr} app from inside the container. The Healthcheck is set as the CheckDefinition on the `DesiredLRP` for the app.
 
-#### Current implementations
-
+#### Current implementations {#lifecycle-implementations}
 * The buildpack app lifecycle implements the {vars.app_runtime_abbr} buildpack-based deployment strategy. For more information, see the [buildpackapplifecycle](https://github.com/cloudfoundry/buildpackapplifecycle) repository on GitHub.
 
 * The Docker app lifecycle implements a Docker deployment strategy. For more information, see the [dockerapplifecycle](https://github.com/cloudfoundry/dockerapplifecycle) repository on GitHub.
 
-### Additional information
-
+### Additional information {#additional-info-diego}
 The following resources provide more information about components from other releases that interact closely with Diego:
 
 * The [CC-Uploader](https://github.com/cloudfoundry/cc-uploader) repository on GitHub.

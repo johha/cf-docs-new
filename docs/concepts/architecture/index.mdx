@@ -14,32 +14,25 @@ See the following descriptions for more information about {vars.app_runtime_abbr
 
 ![Architecture components](/img/concepts/cf_architecture_block.png)
 
-## Routing
-
-### Router
-
+## Routing {#routing}
+### Router {#router}
 The router routes incoming traffic to the appropriate component, either a Cloud Controller component or a hosted application running on a Diego Cell.
 
 The router periodically queries the Diego Bulletin Board System (BBS) to determine which cells and containers each application currently runs on. Using this information, the router recomputes new routing tables based on the IP address of each cell virtual machine (VM) and the host-side port numbers for the cell's containers.
 
 For more information about the routing tier, including the router, see [{vars.app_runtime_abbr} Routing Architecture](../cf-routing-architecture).
 
-## Authentication
-
-### OAuth2 Server (UAA) and Login Server
-
+## Authentication {#authentication}
+### OAuth2 Server (UAA) and Login Server {#uaa}
 The OAuth2 server (the [UAA](./uaa)) and Login Server work together to provide identity management.
 
-## App Lifecycle
-
-### Cloud Controller and Diego Brain
-
+## App Lifecycle {#app-lifecycle}
+### Cloud Controller and Diego Brain {#cc}
 The [Cloud Controller](./cloud-controller) (CC) directs the deployment of applications. To push an app to {vars.app_runtime_abbr}, you target the Cloud Controller. The Cloud Controller then directs the Diego Brain through the CC-Bridge components to coordinate individual [Diego cells](#diego-cell) to stage and run applications.
 
 The Cloud Controller also maintain records of [orgs, spaces, user roles](../roles), services, and more.
 
-### BBS and Cell Reps
-
+### BBS and Cell Reps {#bbs}
 To keep applications available, cloud deployments must constantly monitor their states and reconcile them with their expected states, starting and stopping processes as required.
 
 ![{vars.app_runtime_abbr} Architecture](/img/concepts/diego/app-monitor-diego.png)
@@ -51,10 +44,8 @@ Here is how the components work together:
 * **BBS** uses its convergence process to monitor the `DesiredLRP` and `ActualLRP` values. It runs or stops application instances as appropriate to ensure the `ActualLRP` count matches the `DesiredLRP` count.
 * **Cell Rep** monitors the containers and provides the `ActualLRP` value.
 
-## App Storage and Execution
-
-### Blobstore
-
+## App Storage and Execution {#app-storage-execution}
+### Blobstore {#blob}
 The blobstore is a repository for large binary files, which Github cannot easily manage because GitHub is designed for code. The blobstore contains the following:
 
 * Application code packages
@@ -63,20 +54,15 @@ The blobstore is a repository for large binary files, which Github cannot easily
 
 You can configure the blobstore as either an internal server or an external S3 or S3-compatible endpoint. {vars.blobstore_kb}
 
-### Diego Cell
-
+### Diego Cell {#diego-cell}
 Application instances, application tasks, and staging tasks all run as [Garden](garden) containers on the Diego Cell VMs. The Diego cell rep component manages the lifecycle of those containers and the processes running in them, reports their status to the Diego BBS, and emits their logs and metrics to [Loggregator](#metrics-logging).
 
-## Services
-
-### Service Brokers
-
+## Services {#services}
+### Service Brokers {#broker}
 Applications typically depend on {vars.services} such as databases or third-party SaaS providers. When a developer provisions and binds a service to an application, the service broker for that service is responsible for providing the service instance.
 
-## Messaging
-
-### Internal HTTPS and BBS
-
+## Messaging {#messaging}
+### Internal HTTPS and BBS {#bbs}
 The component VMs of {vars.app_runtime_abbr} communicate with each other internally through HTTP and HTTPS protocols, sharing temporary messages and data stored in Diego's [Bulletin Board System (BBS)](../diego/diego-architecture#bbs).
 
 * BOSH Director colocates a [BOSH DNS](https://bosh.io/docs/dns/) server on every deployed VM. All VMs keep up-to-date DNS records for all the other VMs in the same foundation, enabling service discovery between VMs. BOSH DNS also provides client-side load-balancing by randomly selecting a healthy VM when multiple VMs are available.
@@ -85,10 +71,8 @@ The component VMs of {vars.app_runtime_abbr} communicate with each other interna
 
 The route emitter component uses the NATS protocol to broadcast the latest routing tables to the routers.
 
-## Metrics and Logging
-
-### Loggregator
-
+## Metrics and Logging {#metrics-logging}
+### Loggregator {#metrics}
 The Loggregator (log aggregator) system streams application logs to developers.
 
 For more information about the Loggregator, see <a href="https://docs.cloudfoundry.org/loggregator/architecture.html">Loggregator Architecture</a>.

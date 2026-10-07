@@ -18,8 +18,7 @@ view and affect the spaces for which they have been granted access.
 * Ensures security of app bits in a multi-tenant environment.
 * Prevents possible denial of service attacks through resource starvation.
 
-## System boundaries and access
-
+## System boundaries and access {#system-boundaries}
 In a typical deployment of {vars.app_runtime_abbr}, the components run on virtual machines (VMs) that exist within a VLAN.
 
 In this configuration, the only access points visible on a public network are a load balancer that maps to one or more {vars.app_runtime_abbr} routers and, optionally, a NAT VM and a jumpbox. Because of the limited number of contact points with the public internet, the surface area for possible security vulnerabilities is minimized.
@@ -79,12 +78,10 @@ The preceding diagram shows the following communications:
 
 - Service Brokers in Cloud Foundry vLAN communicates with Brokers in Services vLAN.
 
-### Protocols
-
+### Protocols {#protocols}
 All traffic from the public internet to the Cloud Controller and UAA happens over HTTPS. Inside the boundary of the system, components communicate over a publish-subscribe (pub-sub) message bus NATS, HTTP, and SSL/TLS.
 
-### BOSH
-
+### BOSH {#bosh}
 Operators deploy {vars.app_runtime_abbr} with BOSH. The BOSH Director is the core orchestrating component in BOSH: it controls VM creation and deployment, as well as other software and service lifecycle events. You use HTTPS to ensure secure communication to the BOSH Director.
 
 {vars.company_name} recommends that you deploy the BOSH Director on a subnet that is not
@@ -104,8 +101,7 @@ BOSH does not encrypt data stored on BOSH VMs. Your IaaS might encrypt this data
 :::
 
 
-## Isolation segments
-
+## Isolation segments {#isolation-segments}
 Isolation segments provide dedicated pools of resources to which apps can be deployed to isolate workloads. Using isolation segments separates app resources as completely as if they were in different {vars.app_runtime_abbr} deployments but avoids redundant management components and unneeded network complexity.
 
 You can designate isolation segments for exclusive use by orgs and spaces within {vars.app_runtime_abbr}. This guarantees that apps within the org or space use resources that are not also used by other orgs or spaces. For more information, see [Orgs, Spaces, Roles, and Permissions](./roles).
@@ -127,8 +123,7 @@ This diagram shows how isolation segments keep apps running on different pools o
 
 For API commands related to isolation segments, see [Isolation Segments](http://v3-apidocs.cloudfoundry.org/version/3.0.0/index.html#isolation-segments) in the Cloud Controller API (CAPI) Reference.
 
-## Authentication and authorization
-
+## Authentication and authorization {#auth}
 [User Account and Authentication](./architecture/uaa) (UAA) is the central identity management service for {vars.app_runtime_abbr} and its various components.
 
 UAA acts as an [OAuth2](https://oauth.net/2/) Authorization Server and issues access tokens for apps that request platform resources.
@@ -138,14 +133,12 @@ Operators can configure the identity store in UAA. If users register an account 
 
 Standard {vars.app_runtime_abbr} deployments based on [cf-deployment](https://github.com/cloudfoundry/cf-deployment) provide a UAA client `cf` that can be used to create OAuth 2 tokens using the Password Grant Flow for {vars.app_runtime_abbr} users that are needed to access the CF API. This UAA client is also used by the CF CLI. The UAA client `cf` doesn't require a `client_secret`.
 
-### Managing user access with Role-Based Access Control
-
+### Managing user access with Role-Based Access Control {#rbac}
 Apps that users deploy to {vars.app_runtime_abbr} exist within a space. Spaces exist within orgs. To view and access an org or a space, a user must be a member of it. {vars.app_runtime_abbr} uses role-based access control (RBAC), with each role granted permissions to either an org or a specified space. For more information about roles and permissions, see [Orgs, Spaces, Roles, and Permissions](roles).
 
 {vars.console_links}
 
-## Security for service broker integration
-
+## Security for service broker integration {#service-broker}
 The Cloud Controller authenticates every request with the Service Broker API using HTTP or HTTPS, depending on which protocol that you specify during broker registration. The Cloud Controller rejects any broker registration that does not contain a username and password.
 
 Service instances bound to an app contain credential data. Users specify the binding credentials for user-provided service instances, while third-party brokers specify the binding credentials for managed service instances. The VCAP_SERVICES environment variable contains credential information for any service bound to an app. {vars.app_runtime_abbr} constructs this value from encrypted data that it stores in the CCDB. For more information about user-provided service instances, see [User-Provided Service Instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html).
@@ -154,12 +147,10 @@ The selected third-party broker controls how securely to communicate managed ser
 
 A third-party broker might offer a dashboard client in its catalog. Dashboard clients require a text string defined as a `client_secret`. {vars.app_runtime_abbr} does not store this secret in the CCDB. Instead, {vars.app_runtime_abbr} passes the secret to the UAA component for verification using HTTP or HTTPS.
 
-## Managing software vulnerabilities
-
+## Managing software vulnerabilities {#vuln-manage}
 {vars.app_runtime_abbr} manages software vulnerability using releases and BOSH stemcells. New {vars.app_runtime_abbr} releases are created with updates to address code issues, while new stemcells are created with patches for the latest security fixes to address any underlying operating system issues.
 
-## Ensuring security for app artifacts
-
+## Ensuring security for app artifacts {#app-artifacts}
 {vars.app_runtime_abbr} secures both the code and the configuration of an app using the following functions:
 
 * App developers push their code using the {vars.app_runtime_abbr} API. {vars.app_runtime_abbr} secures each call to the {vars.app_runtime_abbr} API using the [UAA](#auth) and SSL.
@@ -172,14 +163,12 @@ A third-party broker might offer a dashboard client in its catalog. Dashboard cl
 
 * {vars.app_runtime_abbr} operators can configure network traffic rules to control inbound communication to and outbound communication from an app. For more information, see the [Network Traffic Rules](./container-security#config-traffic) section of the _Container Security_ topic.
 
-## Security event logging and auditing
-
+## Security event logging and auditing {#logging}
 For operators, {vars.app_runtime_abbr} provides an audit trail through the `bosh tasks` command. This command shows all actions that an operator has taken with the platform. Additionally, operators can redirect {vars.app_runtime_abbr} component logs to a standard syslog server using the `syslog_daemon_config` [property](http://docs.cloudfoundry.org/running/managing-cf/logging.html) in the `metron_agent` job of `cf-release`.
 
 For users, {vars.app_runtime_abbr} records an audit trail of all relevant API invocations of an app. The Cloud Foundry Command Line Interface (cf CLI) command `cf events` returns this information.
 
-## Recommendations for running a secure deployment
-
+## Recommendations for running a secure deployment {#recommendations}
 To help run a secure deployment, {vars.company_name} recommends:
 
 * Configure UAA clients and users using a BOSH manifest. Limit and manage these clients and users as you would any other kind of privileged account.
@@ -206,8 +195,7 @@ To help run a secure deployment, {vars.company_name} recommends:
 
 {vars.compliance_links}
 
-## Security for apps and services
-
+## Security for apps and services {#apps-services}
 This section links to topics that describe how {vars.app_runtime_abbr} and {vars.app_runtime_abbr} users manage security for apps and service instances.
 
 * [App Security Groups](../concepts/asg): Describes how App Security Groups (ASGs) work and how to manage them in {vars.app_runtime_abbr}.

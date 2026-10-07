@@ -14,8 +14,7 @@ This topic tells you about orgs and spaces in {vars.app_runtime_first} foundatio
 
 Admins, Org Managers, and Space Managers can assign user roles using the Cloud Foundry Command Line Interface (cf CLI). For more information, see [Managing roles](./managing-roles).
 
-## Orgs
-
+## Orgs {#orgs}
 An org is a development account that an individual or multiple collaborators can own and use. All collaborators access an org with user accounts, which have roles such as Org Manager, Org Auditor, and Org Billing Manager. Collaborators in an org share a resource quota plan, apps, services availability, and custom domains.
 
 An admin can suspend an org for various reasons such as failure to provide payment or misuse. When an org is suspended, users cannot perform certain activities within the org, such as push apps, modify spaces, or bind services.
@@ -30,8 +29,7 @@ For more information about the actions that each role can perform, see [User Rol
 
 For details on what activities are allowed for suspended orgs, see [Roles and Permissions for Suspended Orgs](#suspendedroles).
 
-## Spaces
-
+## Spaces {#spaces}
 A space provides users with access to a shared location for app development, deployment, and maintenance. An org can contain multiple spaces. Every app, service, and route is scoped to a space. Roles provide access control for these resources and each space role applies only to a particular space.
 
 An admin or an Org Manager can suspend a space. When a space is suspended, only admins and Org Managers of the parent org can operate on the space. Other space roles cannot perform actions in the space until it is reactivated.
@@ -57,14 +55,12 @@ Org Managers can set quotas on the following for a space:
 * Memory used by a single app instance
 * Log volume per second used across the space
 
-## User roles
-
+## User roles {#roles}
 A user account represents an individual person within the context of a {vars.app_runtime_abbr} foundation. A user can have one or more roles. These roles define the user's permissions in orgs and spaces.
 
 Roles can be assigned different scopes of User Account and Authentication (UAA) privileges. For more information about UAA scopes, see [Scopes](./architecture/uaa#scopes) in _User Account and Authentication (UAA) Server_.
 
-### UAA clients
-
+### UAA clients {#clients}
 In addition to human users, {vars.app_runtime_abbr} supports non-human principals called UAA clients. UAA clients authenticate using the `client_credentials` grant type and are intended for automation, CI/CD pipelines, and platform tooling that need to interact with the Cloud Controller API without a user session.
 
 Like users, UAA clients can be assigned org and space roles. The UAA client ID takes the place of the username when managing client roles with the cf CLI. For more information, see [Assign roles to UAA clients](./managing-roles#clients).
@@ -104,12 +100,10 @@ For non-admin users, the `cloud_controller.read` scope is required to view resou
 
 Before you assign a space role to a user or UAA client, you must first assign them an org role in the parent org. The error message `Server error, error code: 1002, message: cannot set space role because user is not part of the org` occurs if you try to assign a space role first.
 
-## User role permissions
-
+## User role permissions {#permissions}
 Each user role includes different permissions in a {vars.app_runtime_abbr} foundation. The following sections describe the permissions associated with each user role in active orgs, suspended orgs, and suspended spaces in {vars.app_runtime_abbr}.
 
-### Roles and permissions for active orgs
-
+### Roles and permissions for active orgs {#activeroles}
 The following table describes the default permissions for various {vars.app_runtime_abbr} roles in active orgs.
 
 You can use feature flags to edit some of the default permissions in the following table.
@@ -117,14 +111,12 @@ For more information, see <a href="../adminguide/listing-feature-flags.html">Usi
 
 <OssRolesTable />
 
-### Roles and permissions for suspended orgs
-
+### Roles and permissions for suspended orgs {#suspendedroles}
 The following table describes roles and permissions applied after an admin suspends an org.
 
 <SuspendedOrgRolesTable />
 
-### Roles and permissions for suspended spaces
-
+### Roles and permissions for suspended spaces {#suspendedspaceroles}
 The following table describes roles and permissions applied after an admin or Org Manager suspends a space.
 
 <SuspendedSpaceRolesTable />
