@@ -29,11 +29,53 @@ export function stripHeadingAnchors(text) {
   return text.replace(/^(#{1,6})\s*<a id=['"][^'"]*['"]><\/a>\s*/gm, '$1 ');
 }
 
+// Out-of-scope CF doc sections not present in this PoC.
+const OUT_OF_SCOPE = new Set([
+  'devguide', 'adminguide', 'cf-cli', 'deploying', 'services',
+  'buildpacks', 'loggregator', 'uaa', 'running', 'bbr', 'credhub',
+]);
+
 export function rewriteInternalLinks(text) {
   return text.replace(/\]\(([^)]+)\)/g, (m, target) => {
+    // Leave absolute URLs, mailto, and anchor-only links unchanged.
     if (/^(https?:|mailto:|#)/i.test(target)) return m;
-    const fixed = target.replace(/\.html(#.*)?$/i, '$1');
-    return `](${fixed})`;
+
+    // Separate path from anchor.
+    const hashIdx = target.indexOf('#');
+    const path = hashIdx === -1 ? target : target.slice(0, hashIdx);
+    const anchor = hashIdx === -1 ? '' : target.slice(hashIdx);
+
+    // Absolute path links like /uaa/uaa-deploy.html — check first segment.
+    if (path.startsWith('/')) {
+      const absPath = path.slice(1); // strip leading /
+      const firstSeg = absPath.split('/')[0];
+      if (OUT_OF_SCOPE.has(firstSeg)) {
+        const noExt = absPath.replace(/\.html$/i, '');
+        return `](https://docs.cloudfoundry.org/${noExt}.html${anchor})`;
+      }
+    }
+
+    // Relative links: strip leading ../ and ./ to find the first real path segment.
+    const stripped = path.replace(/^(\.\.?\/)+/, '');
+    const firstSeg = stripped.split('/')[0];
+
+    if (OUT_OF_SCOPE.has(firstSeg)) {
+      // Externalize: reconstruct without leading ../ prefix; keep .html (add if not there).
+      const noExt = stripped.replace(/\.html$/i, '');
+      return `](https://docs.cloudfoundry.org/${noExt}.html${anchor})`;
+    }
+
+    // In-scope link: strip .html extension, then fix Docusaurus index routing.
+    let fixed = path.replace(/\.html$/i, '');
+
+    // Docusaurus routes `foo/index.mdx` as `foo/`, so `/index` in path would 404.
+    // Replace trailing /index with / and bare `index` (whole path) with ./ .
+    fixed = fixed.replace(/\/index$/, '/');
+    if (fixed === 'index') fixed = './';
+    // `index#anchor` pattern (bare index with no preceding slash)
+    fixed = fixed.replace(/^index$/, './');
+
+    return `](${fixed}${anchor})`;
   });
 }
 

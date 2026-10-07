@@ -10,7 +10,7 @@ import OssXfccRouter from './_partials/OssXfccRouter.mdx';
 This topic tells you how the Gorouter, the main component in the {vars.app_runtime_first} routing tier, routes HTTP traffic within
 {vars.app_runtime_abbr}.
 
-For more information about routing, see [Routing](architecture/index#routing) in _{vars.app_runtime_abbr} Components_.
+For more information about routing, see [Routing](architecture/#routing) in _{vars.app_runtime_abbr} Components_.
 
 ## HTTP headers
 
@@ -72,7 +72,7 @@ values for the headers with requests to other apps.
 Similar to Zipkin, W3C is a tracing specification that allows app developers to monitor and profile requests and responses.
 
 When W3C tracing is enabled in {vars.app_runtime_abbr}, the Gorouter generates W3C HTTP headers unless they are provided
-by the client, as described in [Unique trace identification](../adminguide/distributed-tracing#unique-trace-id).
+by the client, as described in [Unique trace identification](https://docs.cloudfoundry.org/adminguide/distributed-tracing.html#unique-trace-id).
 For more information about W3C tracing, see the w3.org [Trace Context](https://www.w3.org/TR/trace-context/) standard.
 
 You can add W3C trace IDs to app logs to trace app requests and responses in {vars.app_runtime_abbr}.
@@ -318,7 +318,7 @@ updated list of app instances for each route. Depending on which algorithm is se
 
 As a platform operator, you can configure the behavior by changing the value of `router.balancing_algorithm` manifest property.
 
-As an application developer, you can configure the load balancing algorithm by following the guide [Configuring per-route options](../devguide/custom-per-route-options) which describes how to specify load balancing algorithms scoped at the application level.
+As an application developer, you can configure the load balancing algorithm by following the guide [Configuring per-route options](https://docs.cloudfoundry.org/devguide/custom-per-route-options.html) which describes how to specify load balancing algorithms scoped at the application level.
 
 The possible options:
 
@@ -439,4 +439,4 @@ breaks. The following table describes how the Gorouter behaves if it cannot esta
 
 
 In all cases, if the app still does not respond to the request, the Gorouter returns a `502` error. For more
-information, see [Troubleshooting Router Error Responses](../adminguide/troubleshooting-router-error-responses).
+information, see [Troubleshooting Router Error Responses](https://docs.cloudfoundry.org/adminguide/troubleshooting-router-error-responses.html).

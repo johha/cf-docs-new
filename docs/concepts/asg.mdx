@@ -92,7 +92,7 @@ ASG rules are specified as a JSON array of ASG objects. An ASG object has the fo
 | `ports` | A single port, multiple comma-separated ports, or a single range of ports that can receive traffic. Examples: `443`, `80,8080,8081`, `8080-8081` | Only possible if `protocol` is `tcp` or `udp`. |
 | `code` | ICMP code | Required when `protocol` is `icmp` or `icmpv6`. A value of `-1` allows all codes. |
 | `type` | ICMP | Required when `protocol` is `icmp` or `icmpv6`. A value of `-1` allows all types.
-| `log` | Set to `true` to enable logging. For more information about how to configure system logs to be sent to a syslog drain, see [Using Log Management Services](../devguide/services/log-management). | Logging is only supported with protocol type `tcp`. |
+| `log` | Set to `true` to enable logging. For more information about how to configure system logs to be sent to a syslog drain, see [Using Log Management Services](https://docs.cloudfoundry.org/devguide/services/log-management.html). | Logging is only supported with protocol type `tcp`. |
 | `description` | An optional field for operators managing ASG rules |  |
 
 ## Managing ASGs
@@ -114,7 +114,7 @@ For information about procedures for each of these tasks, see [Managing ASGs wit
 Learn about the commands you need to create and manage ASGs.
 
 Many of the following procedures require the Cloud Foundry Command Line Interface (cf CLI).
-To download the cf CLI, see [Installing the cf CLI](../cf-cli/install-go-cli).
+To download the cf CLI, see [Installing the cf CLI](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html).
 
 ### Viewing ASGs
 
@@ -440,7 +440,7 @@ increased latency when the app is starting. Windows apps with ASGs to more than
 ### Marketplace Services
 
 Each installed Marketplace Service requires its own set of ASG rules to function properly. To determine which
-ASG rules it requires, see the installation instructions for each installed Marketplace Service. For more information about how to provision and integrate services, see [Services Overview](../devguide/services/index).
+ASG rules it requires, see the installation instructions for each installed Marketplace Service. For more information about how to provision and integrate services, see [Services Overview](https://docs.cloudfoundry.org/devguide/services/index.html).
 
 ## About the ASG Creator tool
 

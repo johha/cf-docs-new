@@ -10,7 +10,7 @@ const config = {
   baseUrl: '/docs-next/',
   organizationName: 'cloudfoundry',
   projectName: 'docs-next',
-  onBrokenLinks: 'warn',
+  onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   presets: [
     ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({

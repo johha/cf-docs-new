@@ -123,7 +123,7 @@ The overlay network defaults to `"10.255.0.0/16"`. You can modify the setting to
 * The ranges are not used by the underlying {vars.app_runtime_abbr} infrastructure.
 * The ranges do not overlap with each other.
 
-All Diego Cells in your {vars.app_runtime_abbr} deployment share this overlay network. By default, each Diego Cell is allocated a /24 range that supports 254 containers per Diego Cell, one container for each of the usable IP addresses, `.1` through `.254`. To modify the number of Diego Cells your overlay network supports, see [Overlay Network](../devguide/deploy-apps/cf-networking#overlay) in _Configuring Container-to-Container Networking_.
+All Diego Cells in your {vars.app_runtime_abbr} deployment share this overlay network. By default, each Diego Cell is allocated a /24 range that supports 254 containers per Diego Cell, one container for each of the usable IP addresses, `.1` through `.254`. To modify the number of Diego Cells your overlay network supports, see [Overlay Network](https://docs.cloudfoundry.org/devguide/deploy-apps/cf-networking.html#overlay) in _Configuring Container-to-Container Networking_.
 
 {vars.app_runtime_abbr} container networking is currently supported only on Linux.
 
@@ -155,7 +155,7 @@ Additionally, policies use and and track the GUIDs of the apps. The policies con
 
 ## App service discovery
 
-The {vars.app_runtime_abbr} platform supports DNS-based service discovery that lets apps find each other's internal addresses. For example, a front end app instance can use the service discovery mechanism to establish communications with a back end app instance. To set up and use app service discovery, see [App service discovery](../devguide/deploy-apps/cf-networking#discovery) in _Configuring container-to-container networking_.
+The {vars.app_runtime_abbr} platform supports DNS-based service discovery that lets apps find each other's internal addresses. For example, a front end app instance can use the service discovery mechanism to establish communications with a back end app instance. To set up and use app service discovery, see [App service discovery](https://docs.cloudfoundry.org/devguide/deploy-apps/cf-networking.html#discovery) in _Configuring container-to-container networking_.
 
 Container-to-container app service discovery does not provide client-side load balancing or circuit-breaking, and it does not apply to `cf marketplace` services or require app binding. It just lets apps publish service endpoints to each other, unbrokered and unmediated.
 
