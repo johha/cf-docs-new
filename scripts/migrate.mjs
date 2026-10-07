@@ -63,7 +63,8 @@ async function main() {
       const isPartial = name.startsWith('_');
       const raw = readFileSync(file, 'utf8');
       const {frontmatter, body: rawBody} = splitFrontmatter(raw);
-      const {body, varsUsed, partials, keptHtml} = convertBody(rawBody);
+      const {body: rawConvertedBody, varsUsed, partials, keptHtml} = convertBody(rawBody);
+      let body = rawConvertedBody;
 
       for (const v of varsUsed) if (!varKeys.has(v)) report.unknownVars.add(v);
       for (const pr of partials) if (!partialSources.has(pr)) report.missingPartials.add(pr);
@@ -82,6 +83,18 @@ async function main() {
       // normalize to forward slashes; ensure it starts with ./ or ../
       let partialsDir = relative(dirname(destPath), outPartials).replace(/\\/g, '/');
       if (!partialsDir.startsWith('.')) partialsDir = './' + partialsDir;
+
+      // Root concepts index gets slug '/' so Docusaurus serves it at the site root.
+      // Its relative links must be prefixed with /concepts/ because slug '/' lifts
+      // the page out of the /concepts/ subtree.
+      if (!isPartial && rel === 'index.html.md.erb') {
+        frontmatter.slug = '/';
+        // Rewrite relative links (not absolute, not external, not anchor-only) to /concepts/<link>
+        body = body.replace(/\]\(([^)]+)\)/g, (m, target) => {
+          if (/^(https?:|mailto:|#|\/)/i.test(target)) return m;
+          return `](/concepts/${target})`;
+        });
+      }
 
       const mdx = assembleMdx({frontmatter, body, varsUsed: varsUsed.length > 0, partialsUsed, isPartial, partialsDir});
       mkdirSync(dirname(destPath), {recursive: true});
