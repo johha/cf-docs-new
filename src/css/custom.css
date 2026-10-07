@@ -1,1 +1,28 @@
-/* CF theming applied in Task 8 */
+/* Cloud Foundry theme — palette from legacy _book-vars.scss */
+:root {
+  --ifm-color-primary: #2185c5;
+  --ifm-color-primary-dark: #1e78b1;
+  --ifm-color-primary-darker: #1c71a7;
+  --ifm-color-primary-darkest: #175d89;
+  --ifm-color-primary-light: #3291cd;
+  --ifm-color-primary-lighter: #4098d0;
+  --ifm-color-primary-lightest: #63acd9;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #a7cae1;
+  --ifm-color-primary-dark: #86b6d6;
+  --ifm-color-primary-darker: #75adcf;
+  --ifm-color-primary-darkest: #4a90bd;
+  --ifm-color-primary-light: #c8dcec;
+  --ifm-color-primary-lighter: #d9e5f1;
+  --ifm-color-primary-lightest: #ffffff;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* CF navy for navbar + dark footer */
+.navbar { background-color: #243640; }
+.navbar__title, .navbar__link { color: #ffffff; }
+.footer--dark { --ifm-footer-background-color: #243640; }
