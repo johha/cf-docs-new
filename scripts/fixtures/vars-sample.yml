@@ -1,0 +1,6 @@
+template_variables:
+  app_runtime_abbr: Cloud Foundry
+  platform_name: Cloud Foundry
+  current_major_version: "10-0"
+  empty_var:
+  html_var: '<a href="https://x">link</a>'
