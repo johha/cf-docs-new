@@ -19,7 +19,10 @@ export function classifyTable(tableHtml) {
 }
 
 function cellText(cell) {
-  return cell.innerHTML.replace(/\s+/g, ' ').trim().replace(/\|/g, '\\|');
+  return cell.innerHTML
+    .replace(/<br\s*\/?>/gi, '<br/>')
+    .replace(/<hr\s*\/?>/gi, '<hr/>')
+    .replace(/\s+/g, ' ').trim().replace(/\|/g, '\\|');
 }
 
 export function tableToGfm(tableHtml) {

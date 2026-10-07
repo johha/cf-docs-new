@@ -36,3 +36,10 @@ test('rewriteTables converts simple, keeps complex with reason', () => {
   assert.ok(text.includes('<ul>'));
   assert.equal(keptHtml.length, 1);
 });
+
+test('tableToGfm self-closes br in cell innerHTML', () => {
+  const tbl = `<table><thead><tr><th>A</th></tr></thead><tbody><tr><td>x<br>y</td></tr></tbody></table>`;
+  const gfm = tableToGfm(tbl);
+  assert.ok(gfm.includes('<br/>'), `expected <br/> in gfm, got: ${gfm}`);
+  assert.ok(!gfm.includes('<br>'), `unexpected bare <br> in gfm`);
+});

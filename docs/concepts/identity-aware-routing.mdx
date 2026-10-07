@@ -28,7 +28,7 @@ Identity-aware routing combines four pieces: per-domain mTLS in the Gorouter, ro
 
 To understand the components and how they work together, see the following diagram and table.
 
-![Identity-aware routing request flow: App A presents its instance identity certificate to the Gorouter, which validates it and enforces route policy before forwarding to App B](./img/identity-aware-routing-arch.svg)
+![Identity-aware routing request flow: App A presents its instance identity certificate to the Gorouter, which validates it and enforces route policy before forwarding to App B](/img/concepts/identity-aware-routing-arch.svg)
 
 <table>
 <thead>
@@ -40,7 +40,8 @@ To understand the components and how they work together, see the following diagr
 <tbody>
   <tr>
     <td>Gorouter (per-domain mTLS)</td>
-    <td>Terminates mTLS for domains configured under <code>router.domains</code>. For each such domain it:
+    <td>
+  Terminates mTLS for domains configured under <code>router.domains</code>. For each such domain it:
       <ul>
         <li>Requires a client certificate and validates it against the domain's configured CA (<code>ca_certs</code>), independent of the platform-wide client-certificate validation setting.</li>
         <li>Extracts the caller's {vars.app_runtime_abbr} identity from the certificate Subject.</li>
@@ -80,7 +81,7 @@ This model is _destination-controlled_: the policies that decide who may reach a
 
 Route policies determine which callers are allowed to reach a route on an identity-aware domain. They are _destination-controlled_: only a Space Developer in the route's own space manages them.
 
-![Default-deny route policies on *.apps.identity: App A is allowed to reach App B and App C by explicit policy, while App B to App C is denied by default](./img/identity-aware-routing-policy.svg)
+![Default-deny route policies on *.apps.identity: App A is allowed to reach App B and App C by explicit policy, while App B to App C is denied by default](/img/concepts/identity-aware-routing-policy.svg)
 
 ### Enabling enforcement
 
@@ -168,10 +169,11 @@ Not every caller is a {vars.app_runtime_abbr} app. Partner systems, IoT devices,
 
 In this configuration the operator adds a `router.domains` entry whose CA (`ca_certs`) is the external CA that issues the client certificates. The Gorouter requires and validates the client certificate against that CA and forwards it to the backend in the XFCC header. Because there is no {vars.app_runtime_abbr} identity to evaluate, route policies are not used, and the _backend app authorizes the request_ from the certificate it receives.
 
-<p class="note caution">
-<span class="note__title"><strong>Caution</strong></span>
-Do not pass <code>--enforce-route-policies</code> for a domain that serves non-{vars.app_runtime_abbr} certificates. Route policies key off the {vars.app_runtime_abbr} identity organizational units (app, space, org) in a Diego instance identity certificate, which external certificates do not have. Enforcement on such a domain would deny every caller.
-</p>
+
+:::caution
+Do not pass --enforce-route-policies for a domain that serves non-{vars.app_runtime_abbr} certificates. Route policies key off the {vars.app_runtime_abbr} identity organizational units (app, space, org) in a Diego instance identity certificate, which external certificates do not have. Enforcement on such a domain would deny every caller.
+:::
+
 
 ## Observability
 

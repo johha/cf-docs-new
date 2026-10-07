@@ -47,7 +47,7 @@ The staging process for buildpack apps includes a developer and the following co
 * Step 9: Upload droplet from Diego Cell (Staging) through cc-uploader, then CCNG, to the Blobstore.
 * Step 10: Download droplet from Blobstore to CCNG.
 
-![Full description of this diagram is in the text.](./img/cc-blobstore-staging.png)
+![Full description of this diagram is in the text.](/img/concepts/cc-blobstore-staging.png)
 
 [//]: https://docs.google.com/drawings/d/1LbM5mRjJMOfQXVvJXmDb-csfV61kHaPJaCJy20WVqMI/edit?usp=sharing
 
@@ -64,7 +64,7 @@ The process in which the staging process uses the blobstore is as follows:
     <li>The Cloud Controller makes a series of `HEAD` requests to the blobstore to find out which files it has cached.</li>
     <li>Cloud Controller content-addresses its cached files so that changes to a file result in it being stored as a different object.</li>
     <li>Cloud Controller computes which files it has and which it needs the cf CLI to upload. This process can take a long time.
-    <li>In response to the resource match request, Cloud Controller lists the files the cf CLI needs to upload.</li>
+    </li><li>In response to the resource match request, Cloud Controller lists the files the cf CLI needs to upload.</li>
     </ol>
 
 1. **Upload unmatched files:** The cf CLI compresses and uploads the unmatched files to Cloud Controller.

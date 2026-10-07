@@ -167,7 +167,7 @@ To make an HTTP request to a specific process instance:
 
 1. Retrieve the process GUIDs for your app by running:
 
-		cf curl /v3/apps/<APP-GUID/processes
+		cf curl /v3/apps/&lt;APP-GUID/processes
 
 1. From the terminal output, record the GUID of the process you are interested in.
 
@@ -238,7 +238,7 @@ The TLS (or MTLS) traffic from Gorouter to the app backend "just works." There i
 Gorouter does not talk directly to the backend app, but communicates with the Envoy sidecar. There is an Envoy sidecar in every app container. The Envoy sidecar has the correct certificates needed, so Gorouter and the Envoy communicate using TLS (or MTLS, depending on the configuration). Then the Envoy sidecar proxies the unencrypted traffic directly to the app process.
 For more information, see [Envoyproxy.io](https://www.envoyproxy.io/).
 
-![alt-text"Gorouter connects to app process via Envoy proxy"](./img/envoy-proxy.png)
+![alt-text"Gorouter connects to app process via Envoy proxy"](/img/concepts/envoy-proxy.png)
 
 This feature is allowed by default in `cf-deployment`, which configures the following properties:
 

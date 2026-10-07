@@ -22,6 +22,14 @@ test('assembleMdx injects imports for page', () => {
   assert.ok(out.includes("import Foo from './_partials/Foo.mdx'"));
   assert.ok(out.includes('title: T'));
 });
+test('assembleMdx uses partialsDir for subdir files', () => {
+  const out = assembleMdx({
+    frontmatter: {title: 'Sub'}, body: '<Bar />',
+    varsUsed: false, partialsUsed: [{component: 'Bar', file: 'Bar'}], isPartial: false,
+    partialsDir: '../_partials',
+  });
+  assert.ok(out.includes("import Bar from '../_partials/Bar.mdx'"));
+});
 test('assembleMdx partial has no frontmatter', () => {
   const out = assembleMdx({frontmatter: {}, body: 'hi', varsUsed: false, partialsUsed: [], isPartial: true});
   assert.equal(out.startsWith('---'), false);

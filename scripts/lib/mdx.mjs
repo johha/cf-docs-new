@@ -6,10 +6,10 @@ export function splitFrontmatter(text) {
   return {frontmatter: yaml.load(m[1]) || {}, body: text.slice(m[0].length)};
 }
 
-export function assembleMdx({frontmatter, body, varsUsed, partialsUsed, isPartial}) {
+export function assembleMdx({frontmatter, body, varsUsed, partialsUsed, isPartial, partialsDir = './_partials'}) {
   const imports = [];
   if (varsUsed) imports.push("import {vars} from '@site/src/data/vars';");
-  for (const p of partialsUsed) imports.push(`import ${p.component} from './_partials/${p.file}.mdx';`);
+  for (const p of partialsUsed) imports.push(`import ${p.component} from '${partialsDir}/${p.file}.mdx';`);
   const importBlock = imports.length ? imports.join('\n') + '\n\n' : '';
 
   if (isPartial) {

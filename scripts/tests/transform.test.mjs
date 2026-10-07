@@ -21,6 +21,15 @@ test('rewriteNoteBlocks produces admonition', () => {
   assert.ok(out.trim().endsWith(':::'));
 });
 
+test('rewriteNoteBlocks handles compound classes', () => {
+  const imp = t.rewriteNoteBlocks('<p class="note important">Important text</p>');
+  assert.ok(imp.includes(':::info'), `expected :::info, got: ${imp}`);
+  const cau = t.rewriteNoteBlocks('<p class="note caution">Caution text</p>');
+  assert.ok(cau.includes(':::caution'), `expected :::caution, got: ${cau}`);
+  const warn = t.rewriteNoteBlocks('<p class="warning">Warning text</p>');
+  assert.ok(warn.includes(':::warning'), `expected :::warning, got: ${warn}`);
+});
+
 test('stripHeadingAnchors', () => {
   assert.equal(t.stripHeadingAnchors("## <a id='about'></a> About"), '## About');
 });
@@ -32,9 +41,11 @@ test('rewriteInternalLinks strips .html only for internal', () => {
   assert.equal(t.rewriteInternalLinks('[a](./foo)'), '[a](./foo)');
 });
 
-test('rewriteImagePaths', () => {
-  assert.equal(t.rewriteImagePaths('![x](./images/a.png)'), '![x](./img/a.png)');
-  assert.equal(t.rewriteImagePaths('![x](images/a.png)'), '![x](./img/a.png)');
+test('rewriteImagePaths absolute url for all image path forms', () => {
+  assert.equal(t.rewriteImagePaths('![x](./images/a.png)'), '![x](/img/concepts/a.png)');
+  assert.equal(t.rewriteImagePaths('![x](images/a.png)'), '![x](/img/concepts/a.png)');
+  assert.equal(t.rewriteImagePaths('![x](../images/diego/b.png)'), '![x](/img/concepts/diego/b.png)');
+  assert.equal(t.rewriteImagePaths('![x](./images/../../images/c.png)'), '![x](/img/concepts/c.png)');
 });
 
 test('findVarRefs / rewriteVarRefs', () => {
@@ -47,4 +58,39 @@ test('findPartialRefs / rewritePartialRefs', () => {
   const s = `<%= partial 'oss_roles_table' %> <%= partial "default_asg_oss" %>`;
   assert.deepEqual(t.findPartialRefs(s).sort(), ['default_asg_oss', 'oss_roles_table']);
   assert.equal(t.rewritePartialRefs(`<%= partial 'x_y' %>`), '<XY />');
+});
+
+test('normalizeVoidTags self-closes br, hr, col, img', () => {
+  assert.equal(t.normalizeVoidTags('<br>'), '<br/>');
+  assert.equal(t.normalizeVoidTags('<hr>'), '<hr/>');
+  assert.equal(t.normalizeVoidTags('<col width="50%">'), '<col width="50%"/>');
+  assert.equal(t.normalizeVoidTags('<img src="x.png">'), '<img src="x.png"/>');
+  // Already self-closed → unchanged
+  assert.equal(t.normalizeVoidTags('<br/>'), '<br/>');
+});
+
+test('repairHtml closes unclosed <li>', () => {
+  const input = '<ol><li>A\n<li>B</li>\n</ol>';
+  const out = t.repairHtml(input);
+  assert.ok(out.includes('<li>A\n</li><li>B</li>'), `got: ${out}`);
+});
+
+test('repairHtml closes unclosed <ul> before </td>', () => {
+  const input = '<td><ul><li>a</li><li>b</li></td>';
+  const out = t.repairHtml(input);
+  assert.ok(out.includes('</ul></td>'), `got: ${out}`);
+});
+
+test('repairHtml wraps text+ul in td with <p>', () => {
+  const input = '<td>Some text:\n  <ul>\n    <li>item</li>\n  </ul>\n</td>';
+  const out = t.repairHtml(input);
+  // text moved to next line so MDX can parse it as flow content
+  assert.ok(out.includes('<td>\n  Some text:'), `got: ${out}`);
+  assert.ok(!out.includes('<td>Some text:'), `got: ${out}`);
+});
+
+test('repairHtml escapes CLI placeholder <UPPER-CASE/ in double-tab lines', () => {
+  const input = '\t\tcf curl /v3/apps/<APP-GUID/processes';
+  const out = t.repairHtml(input);
+  assert.ok(out.includes('&lt;APP-GUID/'), `got: ${out}`);
 });

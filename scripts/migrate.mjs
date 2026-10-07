@@ -31,7 +31,9 @@ function convertBody(raw) {
   text = t.rewriteInternalLinks(text);
   text = t.rewriteImagePaths(text);
   const {text: tabled, keptHtml} = rewriteTables(text);
-  return {body: tabled, varsUsed, partials, keptHtml};
+  const normalized = t.normalizeVoidTags(tabled);
+  const repaired = t.repairHtml(normalized);
+  return {body: repaired, varsUsed, partials, keptHtml};
 }
 
 async function main() {
@@ -68,7 +70,6 @@ async function main() {
       for (const k of keptHtml) report.kept.push({file: rel, reason: k.reason});
 
       const partialsUsed = partials.map(pr => ({component: t.toPascalCase(pr), file: t.toPascalCase(pr)}));
-      const mdx = assembleMdx({frontmatter, body, varsUsed: varsUsed.length > 0, partialsUsed, isPartial});
 
       let destPath;
       if (isPartial) {
@@ -76,6 +77,13 @@ async function main() {
       } else {
         destPath = join(outDocs, rel.slice(0, -SRC_SUFFIX.length) + '.mdx');
       }
+
+      // Compute relative path from this file's directory to the _partials dir.
+      // normalize to forward slashes; ensure it starts with ./ or ../
+      let partialsDir = relative(dirname(destPath), outPartials).replace(/\\/g, '/');
+      if (!partialsDir.startsWith('.')) partialsDir = './' + partialsDir;
+
+      const mdx = assembleMdx({frontmatter, body, varsUsed: varsUsed.length > 0, partialsUsed, isPartial, partialsDir});
       mkdirSync(dirname(destPath), {recursive: true});
       writeFileSync(destPath, mdx);
       report.files++;
