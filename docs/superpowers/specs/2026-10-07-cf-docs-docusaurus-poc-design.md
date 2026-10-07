@@ -34,11 +34,30 @@ docs, have working full-text search, and — critically — demonstrate a
 
 **In scope:** content of `docs-cloudfoundry-concepts` only (~30 content pages +
 12 partials + images), Docusaurus scaffold, CF theming, offline full-text
-search, migration/generation scripts, local dev + production build.
+search, migration/generation scripts, local dev + production build, and a
+**GitHub Pages deploy workflow file** (committed as a demonstrable artifact; not
+necessarily executed against a live repo).
 
 **Out of scope (YAGNI for a Phase-2 PoC):** doc versioning dropdown, Algolia,
-the other ~12 doc repos, CI/CD and GitHub Pages deploy workflow, redirect rules,
-i18n, `llms.txt`. These are explicitly RFC Phase 3/4 concerns.
+the other ~12 doc repos, redirect rules, i18n, `llms.txt`, CODEOWNERS, and
+markdown-lint/spell-check CI. These are explicitly RFC Phase 1/3/4 concerns.
+
+### RFC Phase-2 alignment
+
+This PoC is a Phase-2 artifact. Against the RFC's Phase-2 goals (lines 101–110)
+and framework capabilities (§1):
+
+- Docusaurus engine, Markdown authoring, local dev server, templating without
+  Ruby/ERB, full-text search, representative subset — **all covered**.
+- GitHub Pages deployment via GitHub Actions — **covered as a committed workflow
+  file** (see Deployment workflow below); not run against a public repo for the
+  demo.
+- SEO / AI-agent output — **covered by the default build** (see SEO/AI note); no
+  `llms.txt` (RFC marks it optional).
+- Versioning — **deferred by decision.** Docusaurus supports it natively
+  (`docusaurus docs:version`); it is a talking point for the meeting, not built
+  in this PoC, to keep the demo focused.
+
 
 ## Source material (as surveyed)
 
@@ -66,9 +85,11 @@ i18n, `llms.txt`. These are explicitly RFC Phase 3/4 concerns.
 
 ```
 cf-docs-new/
-├── docusaurus.config.js      # site config, CF theming, navbar/footer, search theme
+├── docusaurus.config.js      # site config, CF theming, navbar/footer, search theme, url/baseUrl
 ├── sidebars.js               # generated from legacy subnav (concepts subtree)
 ├── package.json
+├── .github/
+│   └── workflows/deploy.yml  # Docusaurus → GitHub Pages Actions workflow (committed artifact)
 ├── src/
 │   ├── css/custom.css        # CF navy/blue palette mapped to Infima vars
 │   └── data/vars.js          # template_variables.yml ported to JS — REBRAND POINT
@@ -197,6 +218,34 @@ only concepts is migrated for the PoC.
 - Rejected alternative: Algolia DocSearch (RFC option 4) — requires an external
   account/approval and config; too much friction for a PoC and can't run offline.
 
+## Deployment workflow (committed artifact)
+
+To demonstrate the RFC's "GitHub Pages via GitHub Actions, zero cost,
+community-visible" story without standing up a live public deployment:
+
+- `.github/workflows/deploy.yml` — a standard Docusaurus → GitHub Pages Actions
+  workflow (build on push to `main`, publish to Pages). Committed as a reviewable
+  artifact; a reviewer can read exactly what the community pipeline would be. It
+  is not required to execute against a public repo for the demo.
+- `docusaurus.config.js` carries matching `url` / `baseUrl` and
+  `organizationName` / `projectName` placeholders (e.g.
+  `cloudfoundry` / `docs-next`) so the config is deploy-ready and the values are
+  visible/inspectable.
+- `onBrokenLinks: 'throw'` means the same build the workflow runs also gates
+  broken links in CI — reinforcing the RFC's CI-validation goal.
+
+## SEO / AI-agent output (default build)
+
+The RFC's SEO and AI-agent goal is satisfied by the stock Docusaurus production
+build, no extra work:
+
+- `@docusaurus/plugin-sitemap` is part of the default preset → `sitemap.xml`.
+- Output is clean, static, server-rendered HTML with per-page metadata and
+  canonical URLs — crawlable by search engines and AI tools.
+
+`llms.txt` is deliberately **not** generated (the RFC marks it optional); it can
+be added later as a small plugin if the community wants it.
+
 ## Data flow
 
 ```
@@ -239,6 +288,9 @@ Run before declaring the PoC done:
    - **Search** returns concepts pages for queries like "Diego", "roles",
      "security".
 7. CF palette + logo visibly applied.
+8. `sitemap.xml` present in the build output (`build/sitemap.xml`).
+9. `.github/workflows/deploy.yml` and `url`/`baseUrl` in config are present and
+   internally consistent (reviewed, not necessarily executed).
 
 ## Open items / risks
 
