@@ -134,7 +134,7 @@ emits `.mdx` into `docs/concepts/`.
 | `<a id='x'></a> Heading` text | heading with anchor dropped (Docusaurus auto-slugs) |
 | `](./foo.html)` / `](foo.html)` / `](../x/foo.html)` | same path with `.html` stripped |
 | `](./images/x.png)` | `](./img/x.png)` (or static path), images copied accordingly |
-| `<table>...</table>` | kept verbatim (valid in MDX) |
+| `<table>...</table>` | native GFM Markdown when simple; kept as HTML when structurally rich (see Table policy) |
 | frontmatter `title:` | preserved |
 
 Partials themselves (`_name.html.md.erb`) are converted by the same rules into
@@ -145,6 +145,30 @@ module, any partial with no source, or any construct the script can't convert is
 appended to `migration-report.txt`. This makes the "manual review pass per
 section" the RFC describes an explicit, inspectable step rather than hidden
 breakage.
+
+### Table policy (native Markdown by default)
+
+Preference is **native GFM Markdown tables** wherever possible — they are the
+whole point of the RFC (universally understood, low contribution barrier),
+diff cleanly in PRs, and pick up the CF theme automatically. HTML is kept only
+where GFM genuinely cannot express the table without losing information.
+
+The script classifies each `<table>` deterministically:
+
+- **Simple → convert to GFM.** A plain grid: every cell holds only inline
+  content (text, `<strong>`/`<em>`/`<code>`, links), no cell spanning, no column
+  sizing.
+- **Complex → keep as HTML.** Any of: `colspan`/`rowspan`; `<col width>` /
+  explicit column sizing; or a cell containing block content (`<ul>`/`<ol>`,
+  `<pre>`/code block, `<p>`, or multiple block children). GFM cells are
+  inline-only and cannot represent these.
+
+Every table kept as HTML is logged in `migration-report.txt` with its source
+file and the reason (e.g. `kept as HTML: cell contains <ul>`), so the set of
+remaining HTML tables is inspectable and a human can later decide whether to
+hand-simplify any of them. This mirrors the RFC's "automated conversion +
+manual review pass" model and leaves the native-vs-HTML call as an explicit,
+reviewable policy rather than a per-file judgement.
 
 ## Sidebar generation (`scripts/gen-sidebar.mjs`)
 
@@ -208,7 +232,8 @@ Run before declaring the PoC done:
 6. `npm run serve` (prod build): spot-check in browser —
    - `{vars.*}` render as "Cloud Foundry" (not literal braces).
    - `:::note` admonitions render as styled callouts.
-   - Role/scale tables render.
+   - Role/scale tables render (native GFM where converted, HTML where kept);
+     cross-check the HTML-table list in `migration-report.txt`.
    - Images load.
    - Sidebar order/nesting matches the legacy concepts subnav.
    - **Search** returns concepts pages for queries like "Diego", "roles",
