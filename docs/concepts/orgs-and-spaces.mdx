@@ -1,0 +1,205 @@
+---
+title: Planning orgs and spaces in Cloud Foundry
+owner: CAPI
+---
+
+import {vars} from '@site/src/data/vars';
+
+This topic tells you about the considerations for effectively planning foundations, orgs, and spaces. You can plan your orgs and spaces to make the best use of the
+authorization features in {vars.app_runtime_first}.
+
+An installation of {vars.app_runtime_abbr} is referred to as a _foundation_.
+Each foundation has _orgs_ and _spaces_. For more information, see [Orgs, Spaces, Roles, and Permissions](./roles).
+
+The {vars.app_runtime_abbr} roles described in _Orgs, Spaces, Roles, and Permissions_ use the principle of least privilege. Each role exists for a purpose and features in {vars.app_runtime_abbr} enable these purposes.
+
+Consider these roles when planning your foundations, orgs, and spaces. This allows for full use of the features and assumptions of {vars.app_runtime_abbr}.
+
+## How {vars.app_runtime_abbr} layers relate to your company
+
+The following sections describe what {vars.app_runtime_abbr} layers are and how they relate to your company structure.
+
+### Overview of {vars.app_runtime_abbr} layers
+
+For an overview of each of the structural {vars.app_runtime_abbr} layers, see the following table:
+
+
+| {vars.app_runtime_abbr} Layer | Challenge to Maintain | Contains | Description | Roles |
+| --- | --- | --- | --- | --- |
+| Foundations | Hardest | Orgs | For shared components: domains, service brokers, and the physical infrastructure | Admin, Admin Read-Only, Global Auditor |
+| Orgs | Average | Spaces | A group of users who share a resource quota plan, apps, services availability, and custom domains | Org Manager, Org Auditor, Org Billing Manager |
+| Spaces | Easiest | Apps | A shared location for app development, deployment, and maintenance | Space Manager, Space Developer, Space Auditor |
+
+
+### Foundations
+
+Foundations roughly map to a company and environments. For an illustration, see the following diagram:
+
+![Foundations roughly map to a company and to an environment](./img/mapping_foundations.png)
+
+### Orgs
+
+Orgs often map to a business unit in a particular foundation. To understand how you can map your company
+structure to a {vars.app_runtime_abbr} org, see the following diagram:
+
+![Orgs can encompass Business Units, environments, teams, or products](./img/mapping_organizations.png)
+
+### Spaces
+
+Spaces can encompass teams, products, and specific deployables. To understand how you can map your company structure to a {vars.app_runtime_abbr} space, see the following diagram:
+
+![Spaces can encompass Teams, Products and specific deployables](./img/mapping_spaces.png)
+
+## Mapping considerations
+
+The following sections describe considerations you can make when mapping foundations, orgs, and spaces.
+
+### Planning for your environment
+
+To effectively plan your environments, you must decide at what {vars.app_runtime_abbr} layer they belong.
+
+Broad environments, such as production environments, are commonly mapped to a foundation. More specific environments are mapped to an org or space.
+
+Because of the large human cost to maintaining a foundation, you might see foundations mapped to production and staging environments separately.
+
+For examples of environments and how they map to {vars.app_runtime_abbr} layers, see the following table:
+
+
+| {vars.app_runtime_abbr} Layer | Examples of Environments |
+| --- | --- |
+| Foundations | Production, Non-production, Sandbox |
+| Orgs and Spaces | Development, UAT, QA |
+
+
+### Questions to consider about each {vars.app_runtime_abbr} layer
+
+For guiding questions to help you make decisions about planning your {vars.app_runtime_abbr} structure, see the following table:
+
+<table>
+<thead>
+	<tr>
+		<th>{vars.app_runtime_abbr} Layer</th>
+		<th>Questions to Consider</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Foundation</td>
+		<td>
+			<ul>
+				<li>How many foundations can your platform team create, update, and monitor?</li>
+				<li>How much isolation does your organization require?</li>
+				<li>Do you need foundations local to a particular cloud or IaaS environment?</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>Org</td>
+		<td>
+			<ul>
+				<li>How do you plan for capacity needs and changes?</li>
+				<li>What groups need to self-organize together?</li>
+				<li>How do you measure cost and perform billing and chargeback?</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>Space</td>
+		<td>
+			<ul>
+				<li>Are teams building single apps or constellations of microservices?</li>
+				<li>Are teams building a portfolio of apps or standalone apps?</li>
+				<li>When a new space can be created or destroyed?</li>
+				<li>What developer processes require the sandboxed isolation?</li>
+				<li>Do all apps need public routes?</li>
+				<li>What apps need to share the same service instance?</li>
+			</ul>
+		</td>
+	</tr>
+</tbody>
+</table>
+
+### Mapping larger and smaller subsets
+
+_Subsets_ are the company divisions you decide to map to {vars.app_runtime_abbr}. When creating your subsets, consider that the lower the {vars.app_runtime_abbr} layer, the more specific you want to map your subsets. Conversely, the higher the {vars.app_runtime_abbr} layer, the broader you want to make your subsets.
+
+For more information about mapping larger subsets for each {vars.app_runtime_abbr} layer, see the following table:
+
+<table>
+	<tr>
+		<th>{vars.app_runtime_abbr} Layer</th>
+		<th>The impact of mapping larger subsets of your company</th>
+	</tr>
+	<tr>
+		<td>Foundations</td>
+		<td>
+			<ul>
+				<li>Less maintenance</li>
+				<li>Less isolation</li>
+				<li>Better use of shared platform components</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>Orgs</td>
+		<td>
+			<ul>
+				<li>Less quota micromanagement</li>
+				<li>Ability to delegate user onboarding</li>
+				<li>More likely there are people with divergent needs</li>
+				<li>BU must be platform trained and manage potentially many spaces</li>
+		</td>
+	</tr>
+	<tr>
+		<td>Spaces</td>
+		<td>
+			<ul>
+				<li>More likelihood of accidental changes to someone else’s app or service</li>
+				<li>Easier integration between apps</li>
+				<li>More apps can use non-public routes</li>
+			</ul>
+		</td>
+	</tr>
+</table>
+
+For more information about mapping smaller subsets for each {vars.app_runtime_abbr} layer, see the following table:
+
+<table>
+<thead>
+	<tr>
+		<th>{vars.app_runtime_abbr} Layer</th>
+		<th>The impact of mapping smaller subsets of your company</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Foundations</td>
+		<td>
+			<ul>
+				<li>More maintenance, which could be offset with platform automation</li>
+				<li>Higher likelihood of foundations being different</li>
+				<li>More isolation</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>Orgs</td>
+		<td>
+			<ul>
+				<li>More quota management from platform team</li>
+				<li>More freedom to create spaces as needed</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>Spaces</td>
+		<td>
+			<ul>
+				<li>More app isolation</li>
+				<li>Security with more specific ASGs</li>
+				<li>More reliant on external services or service instance sharing</li>
+			</ul>
+		</td>
+	</tr>
+</tbody>
+</table>

@@ -1,0 +1,49 @@
+---
+title: User account and Authentication server
+owner: Identity
+---
+
+import {vars} from '@site/src/data/vars';
+
+This topic tells you about the User Account and Authentication (UAA) Server, the identity management service for {vars.app_runtime_first}.
+
+The primary role of UAA is as an OAuth2 provider, that issues tokens for client apps to use
+when they act on behalf of {vars.app_runtime_abbr} users.
+In collaboration with the login server, UAA can authenticate users with their {vars.app_runtime_abbr} credentials, and can act as an SSO service using those, or other, credentials.
+
+UAA has endpoints for managing user accounts, registering OAuth2 clients, and various
+other management functions.
+
+Different runtimes and services use separate UAA instances. {vars.app_runtime_abbr} has two UAA instances by default: one for BOSH Director, used to bootstrap the rest of the {vars.app_runtime_abbr} deployment; and one for the BOSH deployment, used as a shared resource by all apps that require user authentication. This is the minimum number of UAA instances {vars.app_runtime_abbr} must have. Other runtimes and services also have UAA instances. These instances are separate from each other. If you log into one runtime or service, you are not also logged into other runtimes and services that authenticate using UAA.
+You must log in to each runtime or service separately.
+
+You can deploy UAA locally or to {vars.app_runtime_abbr}.
+See also [Deploy UAA](/uaa/uaa-deploy).
+
+## UAA architecture
+
+The following diagram illustrates the architecture of UAA:
+
+![UAA architecture](../images/uaa-architecture.png)
+
+The following table describes the protocols UAA can use:
+
+| Protocol | Purpose | Profiles |
+| -------- | ------- | -------- |
+| OAuth 2.0 | Authorizes apps and APIs | Authorization Server, Relying Party |
+| OpenID Connect 1.0 | Federates to external identity providers (IDPs) and acts as an IDP for SSO | Identity Provider, Relying Party |
+| SAML 2.0 | Federates to external IDPs | Service Provider |
+| LDAP | Authenticates users in external user store | LDAP Client |
+| SCIM 1.0 | Manages users and groups | Identity Provisioning |
+
+## Client-side tools and libraries
+
+The following table describes the client-side tools and libraries UAA uses:
+
+
+| Name | Language |
+| --- | --- |
+| <a href="https://github.com/cloudfoundry/cf-uaac">UAAC</a><br> <a href="https://github.com/cloudfoundry/cf-uaa-lib">CF-UAA-LIB</a> | Ruby |
+| <a href="http://projects.spring.io/spring-security-oauth/">Spring Security OAuth</a> | Java |
+| <a href="https://github.com/cloudfoundry/cf-java-client">CF Java Client</a> | Java |
+| <a href="https://github.com/cloudfoundry/uaa-singular">UAA Javascript SDK (Singular)</a> | JS |

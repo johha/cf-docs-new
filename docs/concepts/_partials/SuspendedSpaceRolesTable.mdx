@@ -1,0 +1,21 @@
+| User Role | Admin | Admin Read-Only | Global Auditor | Org Manager | Org Auditor | Org Billing Manager | Org User | Space Manager | Space Developer | Space Auditor | Space Supporter |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Scope of operation | Org | Org | Org | Org | Org | Org | Org | Space | Space | Space | Space |
+| Assign space roles | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| View users and roles | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| View spaces | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| Edit and rename the space | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Delete the space | Yes |  |  |  |  |  |  |  |  |  |  |
+| Suspend or activate a space | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| View the status, number of instances, service bindings, and resource use of apps | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| View app logs | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| Deploy, run, and manage apps<sup><strong>1</strong></sup> | Yes |  |  |  |  |  |  |  |  |  |  |
+| Instantiate and bind services to apps<sup><strong>1</strong></sup> | Yes |  |  |  |  |  |  |  |  |  |  |
+| Associate routes<sup><strong>2</strong></sup>, modify resource allocation of apps<sup><strong>1</strong></sup> | Yes |  |  |  |  |  |  |  |  |  |  |
+| Rename apps<sup><strong>1</strong></sup> | Yes |  |  |  |  |  |  |  |  |  |  |
+| Manage Application Security Groups for the space | Yes |  |  |  |  |  |  |  |  |  |  |
+
+
+<sup><strong>1</strong></sup>A user who holds the Org Manager role and an appropriate space role, such as Space Manager or Space Developer, has the same permissions in a suspended space as they would in an active space. The Org Manager role alone does not grant permission to deploy apps or otherwise modify the contents of any space.
+
+<sup><strong>2</strong></sup>Unless deactivated by feature flags.

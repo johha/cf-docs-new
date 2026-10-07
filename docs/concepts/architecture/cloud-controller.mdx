@@ -1,0 +1,44 @@
+---
+title: Cloud Controller
+owner: CAPI
+---
+
+import {vars} from '@site/src/data/vars';
+import CcCommunications from './_partials/CcCommunications.mdx';
+
+Cloud Controller in {vars.app_runtime_first} provides you with REST API endpoints to access the
+system.
+Cloud Controller maintains a database with tables for orgs, spaces,
+services, user roles, and more.
+
+<CcCommunications />
+
+## Diego Auction
+
+The Cloud Controller uses the [Diego Auction](../diego/diego-auction) to balance application
+processes over the [Diego Cells](index#diego-cell) in a {vars.app_runtime_abbr} installation.
+
+## Database (CC_DB)
+
+The Cloud Controller database has been tested with Postgres and MySQL.
+
+## Blobstore
+
+To stage and run apps, {vars.app_runtime_abbr} manages and stores app source code and other files in an S3-compatible blobstore.
+
+Please see [Cloud Controller blobstore](../cc-blobstore) for information.
+
+## Testing
+
+By default `rspec` runs a test suite with the SQLite in-memory database.
+Specify a connection string using the `DB_CONNECTION` environment variable to
+test against Postgres and MySQL. For example:
+
+~~~
+    DB_CONNECTION="postgres://postgres@localhost:5432/ccng" rspec
+    DB_CONNECTION="mysql2://root:password@localhost:3306/ccng" rspec
+~~~
+
+Travis currently runs two build jobs against Postgres and MySQL.
+
+{vars.cloud_controller_logging}

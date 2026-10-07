@@ -1,0 +1,63 @@
+| Activity | Admin | Admin Read-Only | Global Auditor | Org Manager | Org Auditor | Org Billing Manager | Org User | Space Manager | Space Developer | Space Auditor | Space Supporter |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Scope of operation | Org | Org | Org | Org | Org | Org | Org | Space | Space | Space | Space |
+| Assign user roles | Yes |  |  | Yes |  |  |  | Yes |  |  |  |
+| View users and roles | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Create and assign org quota plans | Yes |  |  |  |  |  |  |  |  |  |  |
+| View org quota plans | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Create orgs | Yes | <sup><strong></strong></sup> | <sup><strong></strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> | <sup><strong>1</strong></sup> |
+| View all orgs | Yes | Yes | Yes |  |  |  |  |  |  |  |  |
+| View orgs where user is member | Yes<sup><strong>2</strong></sup> | Yes<sup><strong>2</strong></sup> | Yes<sup><strong>2</strong></sup> | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Edit, rename, and delete orgs | Yes |  |  | Yes<sup><strong>3</strong></sup> |  |  |  |  |  |  |  |
+| Suspend or activate an org | Yes |  |  |  |  |  |  |  |  |  |  |
+| Suspend or activate a space | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Create and assign space quota plans | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Create spaces | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| View spaces | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| Edit spaces | Yes |  |  | Yes |  |  |  | Yes |  |  |  |
+| Delete spaces | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Rename spaces | Yes |  |  | Yes |  |  |  | Yes |  |  |  |
+| View the status, number of instances, service bindings, and resource use of apps | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| Add private domains<sup><strong>4</strong></sup> | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Share private domains with other orgs | Yes |  |  | Yes<sup><strong>5</strong></sup> |  |  |  |  |  |  |  |
+| Deploy, run, and manage apps | Yes |  |  |  |  |  |  |  | Yes |  | Limited<sup><strong>9</strong></sup> |
+| View app logs | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| Use app SSH<sup><strong>6</strong></sup> | Yes |  |  |  |  |  |  |  | Yes |  |  |
+| Instantiate services | Yes |  |  |  |  |  |  |  | Yes |  |  |
+| Bind services to apps | Yes |  |  |  |  |  |  |  | Yes |  | Yes |
+| Manage global service brokers | Yes |  |  |  |  |  |  |  |  |  |  |
+| Manage space-scoped service brokers | Yes |  |  |  |  |  |  |  | Yes |  |  |
+| Associate routes<sup><strong>4</strong></sup>, modify resource allocation of apps | Yes |  |  |  |  |  |  |  | Yes |  | Yes |
+| Rename apps | Yes |  |  |  |  |  |  |  | Yes |  |  |
+| Create and manage Application Security Groups | Yes |  |  |  |  |  |  |  |  |  |  |
+| Manage Application Security Groups for all spaces in an org | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| Manage Application Security Groups for an individual space | Yes |  |  |  |  |  |  | Yes |  |  |  |
+| Create, update, and delete an isolation segment | Yes |  |  |  |  |  |  |  |  |  |  |
+| List all isolation segments for an org | Yes | Yes | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> |
+| Entitle or revoke an isolation segment | Yes |  |  |  |  |  |  |  |  |  |  |
+| List all orgs entitled to an isolation segment | Yes | Yes | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> | Yes<sup><strong>7</strong></sup> |
+| Assign a default isolation segment to an org | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| List and manage isolation segments for spaces | Yes |  |  | Yes |  |  |  |  |  |  |  |
+| List entitled isolation segments for a space | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| List the isolation segment on which an app runs | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes | Yes |
+| List app and service usage events | Yes | Yes | Yes |  |  |  |  |  | Yes | Yes | Yes |
+| Create, delete, and list container-to-container networking policies | Yes |  |  |  |  |  |  |  | Yes<sup><strong>8</strong></sup> |  |  |
+
+
+<sup><strong>1</strong></sup>Not by default, unless feature flag `user_org_creation` is set to `true`.
+
+<sup><strong>2</strong></sup>Admin, admin read-only, and global auditor roles do not need to be added as members of orgs or spaces to view resources.
+
+<sup><strong>3</strong></sup>Org Managers can rename their orgs and edit some fields. They cannot delete orgs.
+
+<sup><strong>4</strong></sup>Unless deactivated by feature flags.
+
+<sup><strong>5</strong></sup>The user attempting to share must have permissions in both the source and target orgs.
+
+<sup><strong>6</strong></sup>This assumes that SSH is enabled for the platform, space, and app. For more information, see [SSH Access Control Hierarchy](../devguide/deploy-apps/app-ssh-overview#ssh-access-control-hierarchy) in _App SSH Overview_.
+
+<sup><strong>7</strong></sup>Applies only to orgs they belong to.
+
+<sup><strong>8</strong></sup>Space Developers can optionally be granted these permissions. For more information, see [Grant Permissions](../devguide/deploy-apps/cf-networking#-grant-permissions) in _Configuring Container-to-Container Networking_.
+
+<sup><strong>9</strong></sup>Cannot create packages or delete resources. For more information, see the [Cloud Controller V3 Documentation](https://v3-apidocs.cloudfoundry.org/).

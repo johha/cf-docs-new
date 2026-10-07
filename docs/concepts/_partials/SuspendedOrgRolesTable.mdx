@@ -1,0 +1,30 @@
+| User Role | Admin | Admin Read-Only | Global Auditor | Org Manager | Org Auditor | Org Billing Manager | Org User | Space Manager | Space Developer | Space Auditor |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Scope of operation | Org | Org | Org | Org | Org | Org | Org | Space | Space | Space |
+| Assign user roles | Yes |  |  |  |  |  |  |  |  |  |
+| View users and roles | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Create and assign org quota plans | Yes |  |  |  |  |  |  |  |  |  |
+| View org quota plans | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Create orgs | Yes |  |  |  |  |  |  |  |  |  |
+| View all orgs | Yes | Yes | Yes |  |  |  |  |  |  |  |
+| View orgs where user is a member | Yes<sup>&#42;</sup><sup>&#42;</sup> | Yes<sup>&#42;</sup><sup>&#42;</sup> | Yes<sup>&#42;</sup><sup>&#42;</sup> | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| Edit, rename, and delete orgs | Yes |  |  |  |  |  |  |  |  |  |
+| Suspend or activate an org | Yes |  |  |  |  |  |  |  |  |  |
+| Create and assign space quota plans | Yes |  |  |  |  |  |  |  |  |  |
+| Create spaces | Yes |  |  |  |  |  |  |  |  |  |
+| View spaces | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes |
+| Edit spaces | Yes |  |  |  |  |  |  |  |  |  |
+| Delete spaces | Yes |  |  |  |  |  |  |  |  |  |
+| Rename spaces | Yes |  |  |  |  |  |  |  |  |  |
+| View the status, number of instances, service bindings, and resource use of apps | Yes | Yes | Yes | Yes |  |  |  | Yes | Yes | Yes |
+| Add private domains<sup>&dagger;</sup> | Yes |  |  |  |  |  |  |  |  |  |
+| Deploy, run, and manage apps | Yes |  |  |  |  |  |  |  |  |  |
+| Instantiate and bind services to apps | Yes |  |  |  |  |  |  |  |  |  |
+| Associate routes<sup>&dagger;</sup>, modify resource allocation of apps | Yes |  |  |  |  |  |  |  |  |  |
+| Rename apps | Yes |  |  |  |  |  |  |  |  |  |
+| Create and manage Application Security Groups | Yes |  |  |  |  |  |  |  |  |  |
+
+
+<sup>&dagger;</sup>Unless disabled by feature flags.
+
+<sup>&#42;</sup><sup>&#42;</sup>Admin, admin read-only, and global auditor roles do not need to be added as members of orgs or spaces to view resources.
