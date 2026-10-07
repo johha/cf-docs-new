@@ -58,7 +58,6 @@ Inputs/conditions the spec implies but that no single task's happy-path test exe
   "name": "cf-docs-new",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -71,23 +70,35 @@ Inputs/conditions the spec implies but that no single task's happy-path test exe
     "gen:all": "npm run gen:vars && npm run migrate && npm run gen:sidebar"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.6.0",
-    "@docusaurus/preset-classic": "^3.6.0",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
     "@easyops-cn/docusaurus-search-local": "^0.46.0",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
     "prism-react-renderer": "^2.3.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.6.0",
+    "@docusaurus/module-type-aliases": "^3.10.2",
     "js-yaml": "^4.1.0",
     "node-html-parser": "^6.1.13"
   },
   "engines": { "node": ">=20.0" }
 }
 ```
+
+> **IMPORTANT (plan correction):** Do NOT add `"type": "module"` to this
+> package.json. Docusaurus generates a CommonJS `server.bundle.js` for SSR;
+> `"type": "module"` makes Node load it as ESM, which crashes the production
+> build with `require.resolveWeak is not a function`. All our own scripts use
+> the explicit `.mjs` extension, so they remain ESM without the field.
+> Docusaurus loads `docusaurus.config.js` / `sidebars.js` / `src/data/vars.js`
+> (plain `.js` using `import`/`export`) via its own loader regardless.
+> Docusaurus is pinned to `^3.10.2` (3.6.0 had an unrelated ESM-resolution bug
+> on current Node). React stays on 18 because
+> `@easyops-cn/docusaurus-search-local` requires React ≤18 (it has no React 19
+> peer support yet); Docusaurus 3.10 works fine on React 18.
 
 - [ ] **Step 2: Create `docusaurus.config.js`**
 
