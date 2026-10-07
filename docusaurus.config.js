@@ -14,6 +14,7 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   presets: [
     ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({
+      // exclude the SDD spec/plan markdown under docs/superpowers from doc routes
       docs: { sidebarPath: './sidebars.js', routeBasePath: '/', exclude: ['superpowers/**'] },
       blog: false,
       theme: { customCss: './src/css/custom.css' },
@@ -44,6 +45,3 @@ const config = {
 };
 
 export default config;
-
-
-
