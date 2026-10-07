@@ -117,7 +117,10 @@ const config = {
   projectName: 'docs-next',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  future: { v4: true },
+  // NOTE: do NOT add `future: { v4: true }` here. In Docusaurus 3.10 the v4
+  // flag requires the @docusaurus/faster package; without it the build errors
+  // ("To enable Docusaurus Faster options, add @docusaurus/faster"). We don't
+  // need faster for this PoC, so v4 is omitted. The build succeeds without it.
   presets: [
     ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({
       docs: { sidebarPath: './sidebars.js', routeBasePath: '/' },
