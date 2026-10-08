@@ -34,3 +34,13 @@
   --ifm-footer-background-color: #243640;
 }
 
+/* Tables: compact cell padding + slightly smaller text, closer to the legacy
+   docs (the Docusaurus default spacing is quite roomy, so wide tables like the
+   roles matrix scroll sooner). Plain <table> element styling — no layout hacks. */
+.markdown table th,
+.markdown table td {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
