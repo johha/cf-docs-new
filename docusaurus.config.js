@@ -41,8 +41,9 @@ const config = {
       sidebar: { hideable: true, autoCollapseCategories: true },
     },
     navbar: {
-      // No `title` — the official logo already reads "Cloud Foundry Community".
-      logo: { alt: 'Cloud Foundry', src: 'img/logo_org.png' },
+      title: 'Documentation',
+      // Official current Cloud Foundry logo (wordmark + mark) from cloudfoundry.org.
+      logo: { alt: 'Cloud Foundry', src: 'img/cf-logo.png' },
       items: [{ type: 'docSidebar', sidebarId: 'conceptsSidebar', position: 'left', label: 'Concepts' }],
     },
     footer: {
