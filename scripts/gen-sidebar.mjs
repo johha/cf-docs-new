@@ -1,7 +1,7 @@
 import {readFileSync, writeFileSync, readdirSync, statSync} from 'node:fs';
 import {join, relative, extname} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {resolveSource, resolveSection, resolveSidebarId, resolvePaths} from './lib/sources.mjs';
+import {resolveAll, resolvePaths} from './lib/sources.mjs';
 import {extractConceptsItems, toSidebarItems} from './lib/subnav.mjs';
 
 function docIds(dir, base) {
@@ -18,11 +18,9 @@ function docIds(dir, base) {
 }
 
 function main() {
-  const section = resolveSection();
-  const sidebarId = resolveSidebarId();
+  const {section, sidebarId, subnavFile} = resolveAll();
   const {outDocs} = resolvePaths(section);
-  const subnav = resolveSource('subnav', process.argv[2]);
-  const erb = readFileSync(subnav, 'utf8');
+  const erb = readFileSync(subnavFile, 'utf8');
   // IDs are relative to the docs root, e.g. "concepts/architecture/index"
   const valid = docIds(outDocs, 'docs');
   const items = toSidebarItems(extractConceptsItems(erb), {validId: id => valid.has(id)});

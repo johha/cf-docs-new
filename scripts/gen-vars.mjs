@@ -1,7 +1,7 @@
 import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
 import {dirname} from 'node:path';
 import yaml from 'js-yaml';
-import {resolveSource} from './lib/sources.mjs';
+import {resolveAll} from './lib/sources.mjs';
 
 const HTML_TAG_RE = /<[a-z][^>]*>/i;
 
@@ -34,8 +34,8 @@ function render(vars, htmlVars) {
 }
 
 function main() {
-  const src = resolveSource('vars', process.argv[2]);
-  const vars = buildVars(readFileSync(src, 'utf8'));
+  const {varsFile} = resolveAll();
+  const vars = buildVars(readFileSync(varsFile, 'utf8'));
   const htmlVars = buildHtmlVars(vars);
   const outPath = 'src/data/vars.js';
   mkdirSync(dirname(outPath), {recursive: true});

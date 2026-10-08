@@ -1,7 +1,7 @@
 import {readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, copyFileSync, rmSync} from 'node:fs';
 import {join, relative, dirname, basename, extname} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {resolveSource, resolveSection, resolvePaths} from './lib/sources.mjs';
+import {resolveAll, resolvePaths} from './lib/sources.mjs';
 import * as t from './lib/transform.mjs';
 import {rewriteTables} from './lib/tables.mjs';
 import {splitFrontmatter, assembleMdx} from './lib/mdx.mjs';
@@ -37,9 +37,9 @@ function convertBody(raw, htmlVars) {
 }
 
 async function main() {
-  const section = resolveSection();
+  const {srcDir, section, varsFile} = resolveAll();
   const {outDocs, outPartials, outImg, outReport} = resolvePaths(section);
-  const srcRoot = resolveSource('concepts', process.argv[2]);
+  const srcRoot = srcDir;
   const varMod = await import(pathToFileURL(join(process.cwd(), 'src/data/vars.js')).href);
   const varKeys = new Set(Object.keys(varMod.vars));
   const htmlVars = varMod.htmlVars || {};
