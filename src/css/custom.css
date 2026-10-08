@@ -41,9 +41,9 @@
 }
 .markdown table th,
 .markdown table td {
-  padding: 0.4rem 0.65rem;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  border-width: 1px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  border: 1px solid var(--ifm-color-emphasis-200);
 }
 
