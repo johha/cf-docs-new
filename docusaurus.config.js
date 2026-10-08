@@ -43,7 +43,7 @@ const config = {
     navbar: {
       title: 'Documentation',
       // Official current Cloud Foundry logo (wordmark + mark) from cloudfoundry.org.
-      logo: { alt: 'Cloud Foundry', src: 'img/cf-logo.png' },
+      logo: { alt: 'Cloud Foundry', src: 'img/cf-logo-vertical.png' },
       items: [{ type: 'docSidebar', sidebarId: 'conceptsSidebar', position: 'left', label: 'Concepts' }],
     },
     footer: {
