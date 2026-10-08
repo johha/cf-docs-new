@@ -22,11 +22,12 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-/* Navbar: CF navy with white text, matching the legacy header. */
+/* Navbar: light blue (#a7cae1) with a navy bottom border, matching legacy. */
 :root {
-  --ifm-navbar-background-color: #243640;
-  --ifm-navbar-link-color: #ffffff;
-  --ifm-navbar-link-hover-color: #a7cae1;
+  --ifm-navbar-background-color: #a7cae1;
+  --ifm-navbar-link-color: #243640;
+  --ifm-navbar-link-hover-color: #175d89;
+  --ifm-navbar-shadow: 0 2px 0 0 #243640;
 }
 
 /* Footer: CF navy (legacy $navy) — the dark footer variant reads it from here. */
