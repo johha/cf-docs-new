@@ -49,7 +49,7 @@ const config = {
     footer: {
       style: 'dark',
       links: [{ title: 'Community', items: [{ label: 'Get Involved', href: 'https://www.cloudfoundry.org/community/' }] }],
-      copyright: `Cloud Foundry Documentation`,
+      copyright: `Cloud Foundry Documentation © ${new Date().getFullYear()} Cloud Foundry Foundation. All Rights Reserved.`,
     },
     prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
   }),
