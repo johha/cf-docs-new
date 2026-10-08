@@ -15,7 +15,11 @@ const config = {
   presets: [
     ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({
       // exclude the SDD spec/plan markdown under docs/superpowers from doc routes
-      docs: { sidebarPath: './sidebars.js', routeBasePath: '/', exclude: ['superpowers/**'] },
+      docs: {
+        sidebarPath: './sidebars.js',
+        routeBasePath: '/',
+        exclude: ['superpowers/**'],
+      },
       blog: false,
       theme: { customCss: './src/css/custom.css' },
     })],
@@ -30,8 +34,14 @@ const config = {
       })],
   ],
   themeConfig: /** @type {import('@docusaurus/preset-classic').ThemeConfig} */ ({
+    // Keep the right-hand table of contents short: top-level sections only.
+    tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
+    // Left sidebar: a hide toggle (bottom) + collapsible categories (both native).
+    docs: {
+      sidebar: { hideable: true, autoCollapseCategories: true },
+    },
     navbar: {
-      title: 'Cloud Foundry',
+      // No `title` — the official logo already reads "Cloud Foundry Community".
       logo: { alt: 'Cloud Foundry', src: 'img/logo_org.png' },
       items: [{ type: 'docSidebar', sidebarId: 'conceptsSidebar', position: 'left', label: 'Concepts' }],
     },

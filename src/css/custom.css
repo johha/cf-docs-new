@@ -22,7 +22,14 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-/* CF navy for navbar + dark footer */
-.navbar { background-color: #243640; }
-.navbar__title, .navbar__link { color: #ffffff; }
-.footer--dark { --ifm-footer-background-color: #243640; }
+/* Navbar: light blue to match the legacy $color-bg-header (#a7cae1).
+   Set via Infima's own variables rather than overriding .navbar rules. */
+:root {
+  --ifm-navbar-background-color: #a7cae1;
+}
+
+/* Footer: CF navy (legacy $navy) — the dark footer variant reads it from here. */
+[data-theme='light'] .footer--dark,
+.footer--dark {
+  --ifm-footer-background-color: #243640;
+}
