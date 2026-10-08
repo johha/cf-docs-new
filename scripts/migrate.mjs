@@ -1,7 +1,7 @@
 import {readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, copyFileSync, rmSync} from 'node:fs';
 import {join, relative, dirname, basename, extname} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {resolveSource} from './lib/sources.mjs';
+import {resolveSource, resolveSection, resolvePaths} from './lib/sources.mjs';
 import * as t from './lib/transform.mjs';
 import {rewriteTables} from './lib/tables.mjs';
 import {splitFrontmatter, assembleMdx} from './lib/mdx.mjs';
@@ -37,14 +37,13 @@ function convertBody(raw, htmlVars) {
 }
 
 async function main() {
+  const section = resolveSection();
+  const {outDocs, outPartials, outImg, outReport} = resolvePaths(section);
   const srcRoot = resolveSource('concepts', process.argv[2]);
   const varMod = await import(pathToFileURL(join(process.cwd(), 'src/data/vars.js')).href);
   const varKeys = new Set(Object.keys(varMod.vars));
   const htmlVars = varMod.htmlVars || {};
 
-  const outDocs = 'docs/concepts';
-  const outPartials = join(outDocs, '_partials');
-  const outImg = 'static/img/concepts';
   rmSync(outDocs, {recursive: true, force: true});
   mkdirSync(outPartials, {recursive: true});
   mkdirSync(outImg, {recursive: true});
@@ -86,15 +85,14 @@ async function main() {
       let partialsDir = relative(dirname(destPath), outPartials).replace(/\\/g, '/');
       if (!partialsDir.startsWith('.')) partialsDir = './' + partialsDir;
 
-      // Root concepts index gets slug '/' so Docusaurus serves it at the site root.
-      // Its relative links must be prefixed with /concepts/ because slug '/' lifts
-      // the page out of the /concepts/ subtree.
+      // Root section index gets slug '/' so Docusaurus serves it at the site root.
+      // Its relative links must be prefixed with /<section>/ because slug '/' lifts
+      // the page out of the /<section>/ subtree.
       if (!isPartial && rel === 'index.html.md.erb') {
         frontmatter.slug = '/';
-        // Rewrite relative links (not absolute, not external, not anchor-only) to /concepts/<link>
         body = body.replace(/\]\(([^)]+)\)/g, (m, target) => {
           if (/^(https?:|mailto:|#|\/)/i.test(target)) return m;
-          return `](/concepts/${target})`;
+          return `](/${section}/${target})`;
         });
       }
 
@@ -129,9 +127,9 @@ async function main() {
   for (const p of report.missingPartials) lines.push(`- ${p}`);
   lines.push(`\n## Errors (${report.errors.length})`);
   for (const e of report.errors) lines.push(`- ${e.file}: ${e.message}`);
-  writeFileSync('migration-report.txt', lines.join('\n') + '\n');
-  console.log(`Converted ${report.files} files. Kept ${report.kept.length} HTML tables, ` +
-    `${report.unknownVars.size} unknown vars, ${report.errors.length} errors. See migration-report.txt.`);
+  writeFileSync(outReport, lines.join('\n') + '\n');
+  console.log(`[${section}] Converted ${report.files} files. Kept ${report.kept.length} HTML tables, ` +
+    `${report.unknownVars.size} unknown vars, ${report.errors.length} errors. See ${outReport}.`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

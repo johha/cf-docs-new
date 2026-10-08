@@ -1,5 +1,5 @@
 import {existsSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {resolve, join} from 'node:path';
 
 const DEFAULTS = {
   concepts: '../docs-cloudfoundry-concepts',
@@ -15,4 +15,25 @@ export function resolveSource(name, cliArg) {
     throw new Error(`Source "${name}" not found at ${abs}. Pass a path arg or set ${ENV[name]}.`);
   }
   return abs;
+}
+
+/** The docs subdirectory slug, e.g. "concepts" → docs/concepts, static/img/concepts */
+export function resolveSection() {
+  return process.env.CF_SECTION ?? 'concepts';
+}
+
+/** The sidebar key written into sidebars.js, e.g. "conceptsSidebar" */
+export function resolveSidebarId() {
+  return process.env.CF_SIDEBAR_ID ?? 'conceptsSidebar';
+}
+
+/** Derived output paths for a given section slug. */
+export function resolvePaths(section) {
+  const s = section ?? resolveSection();
+  return {
+    outDocs:     join('docs', s),
+    outPartials: join('docs', s, '_partials'),
+    outImg:      join('static', 'img', s),
+    outReport:   `migration-report-${s}.txt`,
+  };
 }
