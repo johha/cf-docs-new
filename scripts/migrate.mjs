@@ -19,12 +19,12 @@ function walk(dir, filterExt) {
   return out;
 }
 
-function convertBody(raw) {
+function convertBody(raw, htmlVars) {
   let text = raw;
   text = t.stripErbComments(text);
   const varsUsed = t.findVarRefs(text);
   const partials = t.findPartialRefs(text);
-  text = t.rewriteVarRefs(text);
+  text = t.rewriteVarRefs(text, htmlVars);
   text = t.rewritePartialRefs(text);
   text = t.rewriteNoteBlocks(text);
   text = t.stripHeadingAnchors(text);
@@ -38,8 +38,9 @@ function convertBody(raw) {
 
 async function main() {
   const srcRoot = resolveSource('concepts', process.argv[2]);
-  const varKeys = new Set(Object.keys(
-    (await import(pathToFileURL(join(process.cwd(), 'src/data/vars.js')).href)).vars));
+  const varMod = await import(pathToFileURL(join(process.cwd(), 'src/data/vars.js')).href);
+  const varKeys = new Set(Object.keys(varMod.vars));
+  const htmlVars = varMod.htmlVars || {};
 
   const outDocs = 'docs/concepts';
   const outPartials = join(outDocs, '_partials');
@@ -63,13 +64,14 @@ async function main() {
       const isPartial = name.startsWith('_');
       const raw = readFileSync(file, 'utf8');
       const {frontmatter, body: rawBody} = splitFrontmatter(raw);
-      const {body: rawConvertedBody, varsUsed, partials, keptHtml} = convertBody(rawBody);
+      const {body: rawConvertedBody, varsUsed, partials, keptHtml} = convertBody(rawBody, htmlVars);
       let body = rawConvertedBody;
 
       for (const v of varsUsed) if (!varKeys.has(v)) report.unknownVars.add(v);
       for (const pr of partials) if (!partialSources.has(pr)) report.missingPartials.add(pr);
       for (const k of keptHtml) report.kept.push({file: rel, reason: k.reason});
 
+      const htmlUsed = varsUsed.some(v => htmlVars[v]);
       const partialsUsed = partials.map(pr => ({component: t.toPascalCase(pr), file: t.toPascalCase(pr)}));
 
       let destPath;
@@ -96,7 +98,7 @@ async function main() {
         });
       }
 
-      const mdx = assembleMdx({frontmatter, body, varsUsed: varsUsed.length > 0, partialsUsed, isPartial, partialsDir});
+      const mdx = assembleMdx({frontmatter, body, varsUsed: varsUsed.length > 0, htmlUsed, partialsUsed, isPartial, partialsDir});
       mkdirSync(dirname(destPath), {recursive: true});
       writeFileSync(destPath, mdx);
       report.files++;

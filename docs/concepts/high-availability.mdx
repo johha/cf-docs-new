@@ -4,6 +4,7 @@ owner: Release Integration
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 import OssScaleTable from './_partials/OssScaleTable.mdx';
 import MaxInFlightText from './_partials/MaxInFlightText.mdx';
 
@@ -99,7 +100,7 @@ deployment supports VM scaling.
 
 Learn about the infrastructure required to support scaling component VMs for high availability.
 
-{vars.max_in_flight_header}
+<Html html={vars.max_in_flight_header} />
 <MaxInFlightText />
 
 {vars.om_resurrector_header}
@@ -110,7 +111,7 @@ Learn about the infrastructure required to support scaling component VMs for hig
 Each IaaS has different ways of limiting resource consumption for scaling VMs. Consult with your IaaS administrator to ensure additional VMs and related
 resources, like IPs and storage, are available to scale.
 
-For more information about configuring your resource pools according to the requirements of your deployment, see {vars.pools_link}
+For more information about configuring your resource pools according to the requirements of your deployment, see <Html html={vars.pools_link} />
 
 {vars.pcf_pools}
 

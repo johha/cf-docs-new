@@ -4,6 +4,7 @@ owners: CAPI, Identity
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 import OssRolesTable from './_partials/OssRolesTable.mdx';
 import SuspendedOrgRolesTable from './_partials/SuspendedOrgRolesTable.mdx';
 import SuspendedSpaceRolesTable from './_partials/SuspendedSpaceRolesTable.mdx';
@@ -67,17 +68,17 @@ Like users, UAA clients can be assigned org and space roles. The UAA client ID t
 
 The following describes each type of user role in {vars.app_runtime_abbr}:
 
-{vars.admin_role}
-{vars.admin_read_only_role}
-{vars.global_auditor_role}
+<Html html={vars.admin_role} />
+<Html html={vars.admin_read_only_role} />
+<Html html={vars.global_auditor_role} />
 
 * **Org Managers**: Administer the org.
 
 * **Org Auditors**: Read-only access to user information and org quota usage
 information.
 
-{vars.billing_manager_role}
-{vars.billing_manager_role_note}
+<Html html={vars.billing_manager_role} />
+<Html html={vars.billing_manager_role_note} />
 
 * **Org Users**: Read-only access to the list of other org users and their roles. In the v2 Cloud Controller API, when an Org Manager gives a person an Org or Space role, that person automatically receives Org User status in that org. This is no longer the case in the V3 Cloud Controller API.
 

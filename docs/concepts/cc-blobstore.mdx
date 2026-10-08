@@ -4,6 +4,7 @@ owner: CAPI
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 
 To stage and run apps, {vars.app_runtime_abbr} manages and stores the following types of
 binary large object (blob) files:
@@ -26,7 +27,7 @@ This topic references staging and treats all blobstores as generic object stores
 
 For more information about staging, see [How Apps Are Staged](../concepts/how-applications-are-staged).
 
-For more information about how specific third-party blobstores can be configured, see {vars.blobstore_link}.
+For more information about how specific third-party blobstores can be configured, see <Html html={vars.blobstore_link} />.
 
 ## Staging using the blobstore {#stage-blobstore}
 This section describes how staging buildpack apps uses the blobstore.

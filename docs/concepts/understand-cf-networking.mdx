@@ -4,13 +4,14 @@ owner: CF for VMs Networking
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 
 This topic provides you with an overview of how container-to-container networking works in {vars.app_runtime_first}.
 
 Container-to-container networking is not available for apps hosted on Microsoft Windows.
 
 The container-to-container networking feature enables app instances to communicate with each other directly.
-{vars.cf_networking}
+<Html html={vars.cf_networking} />
 
 
 :::note

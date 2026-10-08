@@ -4,6 +4,7 @@ owner: Security
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 import ConfigManifest from './_partials/ConfigManifest.mdx';
 
 This topic tells you about how {vars.app_runtime_first} secures the containers
@@ -175,7 +176,7 @@ Admins configure these rules at two levels:
 
 * Application Security Groups (ASGs) apply network traffic rules at the container level. {vars.app_sec_groups_link}
 
-* Container-to-container networking policies determine app-to-app communication. Within {vars.app_runtime_abbr}, apps can communicate directly with each other, but the containers are isolated from outside {vars.app_runtime_abbr}. {vars.container_network_link}
+* Container-to-container networking policies determine app-to-app communication. Within {vars.app_runtime_abbr}, apps can communicate directly with each other, but the containers are isolated from outside {vars.app_runtime_abbr}. <Html html={vars.container_network_link} />
 
 ## Container security {#security}
 {vars.app_runtime_abbr} secures containers through the following measures:

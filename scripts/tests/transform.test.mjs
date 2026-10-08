@@ -80,10 +80,26 @@ test('rewriteImagePaths absolute url for all image path forms', () => {
   assert.equal(t.rewriteImagePaths('![x](./images/../../images/c.png)'), '![x](/img/concepts/c.png)');
 });
 
-test('findVarRefs / rewriteVarRefs', () => {
+test('findVarRefs / rewriteVarRefs plain (no htmlVars)', () => {
   const s = 'use <%= vars.app_runtime_abbr %> and <%= vars.platform_name %> and <%= vars.app_runtime_abbr %>';
   assert.deepEqual(t.findVarRefs(s).sort(), ['app_runtime_abbr', 'platform_name']);
   assert.equal(t.rewriteVarRefs('x <%= vars.foo %>'), 'x {vars.foo}');
+});
+
+test('rewriteVarRefs with htmlVars emits <Html> for HTML keys', () => {
+  const htmlVars = {admin_role: true, credhub_link: true};
+  assert.equal(
+    t.rewriteVarRefs('<%= vars.admin_role %>', htmlVars),
+    '<Html html={vars.admin_role} />'
+  );
+  assert.equal(
+    t.rewriteVarRefs('<%= vars.platform_name %>', htmlVars),
+    '{vars.platform_name}'
+  );
+  assert.equal(
+    t.rewriteVarRefs('<%= vars.credhub_link %> and <%= vars.platform_name %>', htmlVars),
+    '<Html html={vars.credhub_link} /> and {vars.platform_name}'
+  );
 });
 
 test('findPartialRefs / rewritePartialRefs', () => {

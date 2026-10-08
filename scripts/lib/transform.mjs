@@ -147,8 +147,11 @@ export function findVarRefs(text) {
   return [...set];
 }
 
-export function rewriteVarRefs(text) {
-  return text.replace(/<%=\s*vars\.([a-zA-Z0-9_]+)\s*%>/g, '{vars.$1}');
+export function rewriteVarRefs(text, htmlVars) {
+  return text.replace(/<%=\s*vars\.([a-zA-Z0-9_]+)\s*%>/g, (_, key) => {
+    if (htmlVars && htmlVars[key]) return `<Html html={vars.${key}} />`;
+    return `{vars.${key}}`;
+  });
 }
 
 export function findPartialRefs(text) {

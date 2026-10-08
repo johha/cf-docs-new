@@ -30,6 +30,21 @@ test('assembleMdx uses partialsDir for subdir files', () => {
   });
   assert.ok(out.includes("import Bar from '../_partials/Bar.mdx'"));
 });
+test('assembleMdx injects Html import when htmlUsed is true', () => {
+  const out = assembleMdx({
+    frontmatter: {title: 'T'}, body: '<Html html={vars.admin_role} />',
+    varsUsed: true, htmlUsed: true, partialsUsed: [], isPartial: false,
+  });
+  assert.ok(out.includes("import {vars} from '@site/src/data/vars'"));
+  assert.ok(out.includes("import Html from '@site/src/components/Html'"));
+});
+test('assembleMdx does not inject Html import when htmlUsed is false', () => {
+  const out = assembleMdx({
+    frontmatter: {title: 'T'}, body: '{vars.platform_name}',
+    varsUsed: true, htmlUsed: false, partialsUsed: [], isPartial: false,
+  });
+  assert.ok(!out.includes("import Html from"));
+});
 test('assembleMdx partial has no frontmatter', () => {
   const out = assembleMdx({frontmatter: {}, body: 'hi', varsUsed: false, partialsUsed: [], isPartial: true});
   assert.equal(out.startsWith('---'), false);

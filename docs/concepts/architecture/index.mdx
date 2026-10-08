@@ -3,6 +3,7 @@ title: Runtime components
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 import OldCollector from '../_partials/OldCollector.mdx';
 
 This topic tells you about the {vars.app_runtime_first} runtime components.
@@ -59,7 +60,7 @@ Application instances, application tasks, and staging tasks all run as [Garden](
 
 ## Services {#services}
 ### Service Brokers {#broker}
-Applications typically depend on {vars.services} such as databases or third-party SaaS providers. When a developer provisions and binds a service to an application, the service broker for that service is responsible for providing the service instance.
+Applications typically depend on <Html html={vars.services} /> such as databases or third-party SaaS providers. When a developer provisions and binds a service to an application, the service broker for that service is responsible for providing the service instance.
 
 ## Messaging {#messaging}
 ### Internal HTTPS and BBS {#bbs}

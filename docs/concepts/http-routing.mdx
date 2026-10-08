@@ -4,6 +4,7 @@ owner: CF for VMs Networking
 ---
 
 import {vars} from '@site/src/data/vars';
+import Html from '@site/src/components/Html';
 import OssXfccLoadbalancer from './_partials/OssXfccLoadbalancer.mdx';
 import OssXfccRouter from './_partials/OssXfccRouter.mdx';
 
@@ -46,7 +47,7 @@ If your load balancer terminates TLS on the client side of the Gorouter, it must
 Zipkin is a tracing system that allows app developers to troubleshoot failures or latency issues. Zipkin provides the ability to trace requests and responses
 across distributed systems. For more information about Zipkin tracing, see [Zipkin.io](http://zipkin.io/).
 
-{vars.zipkin_enable_link}
+<Html html={vars.zipkin_enable_link} />
 
 * If the `X-B3-TraceId` and `X-B3-SpanId` HTTP headers are not present in the request, the Gorouter generates values for these and inserts the headers into
 the request forwarded to an app. The Gorouter access log message for the request includes `x_b3_traceid` and `x_b3_spanid`.
