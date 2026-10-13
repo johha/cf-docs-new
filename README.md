@@ -1,5 +1,8 @@
 # Cloud Foundry Docs — Docusaurus PoC
 
+> **This is a proof-of-concept** for [RFC: CF Documentation Modernization](https://github.com/cloudfoundry/community/pull/1642). It is not the official CF documentation.
+> Live site: **https://johha.github.io/cf-docs-new/**
+
 This repository is an RFC Phase-2 proof-of-concept demonstrating migration of
 [docs-cloudfoundry-concepts](https://github.com/cloudfoundry/docs-cloudfoundry-concepts)
 from the legacy ERB/book pipeline to [Docusaurus 3](https://docusaurus.io/).

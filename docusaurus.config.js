@@ -34,6 +34,13 @@ const config = {
       })],
   ],
   themeConfig: /** @type {import('@docusaurus/preset-classic').ThemeConfig} */ ({
+    announcementBar: {
+      id: 'poc_banner',
+      content: 'This is a <strong>proof-of-concept</strong> for the <a href="https://github.com/cloudfoundry/community/pull/1642">CF Documentation Modernization RFC</a>. It is not the official CF documentation.',
+      backgroundColor: '#fff3cd',
+      textColor: '#664d03',
+      isCloseable: false,
+    },
     // Keep the right-hand table of contents short: top-level sections only.
     tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
     // Left sidebar: a hide toggle (bottom) + collapsible categories (both native).
