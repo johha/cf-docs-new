@@ -18,7 +18,7 @@ const config = {
       docs: {
         sidebarPath: './sidebars.js',
         routeBasePath: '/',
-        exclude: ['superpowers/**'],
+        exclude: ['superpowers/**', '**/_partials/**'],
       },
       blog: false,
       theme: { customCss: './src/css/custom.css' },

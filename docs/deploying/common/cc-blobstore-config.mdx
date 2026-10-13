@@ -1,0 +1,645 @@
+---
+title: Cloud Controller Blobstore Configuration
+owner: CAPI
+---
+
+This topic explains how to configure a blobstore for the Cloud Controller.
+
+## Overview {#overview}
+The Cloud Controller stores four types of objects in a blobstore: <code>buildpacks</code>, <code>droplets</code>, <code>packages</code>, and <code>resource_pool</code>.
+
+The [`cf-deployment`](https://github.com/cloudfoundry/cf-deployment/blob/master/operations/README.md) GitHub repository provides ops files with several common blobstore configurations. By default, `cf-deployment` uses the internal **WebDAV** blobstore; for production environments a highly available external blobstore (for example, AWS S3) is recommended.
+
+External blobstores are configured through the [Storage CLI](https://github.com/cloudfoundry/storage-cli) with `blobstore_type: storage-cli` and one of the following `blobstore_provider` values:
+
+| `blobstore_provider` | Backend |
+|----------------------|---------|
+| `s3`                 | AWS S3 and S3-compatible object stores |
+| `gcs`                | Google Cloud Storage |
+| `azurebs`            | Azure Blob Storage |
+| `alioss`             | AliCloud Object Storage Service |
+| `dav`                | Internal WebDAV blobstore (capi-release `blobstore` BOSH job) |
+
+
+:::note
+Note: NFS-backed blobstores and the legacy Ruby Fog gem (blobstore_type: fog) are no longer supported. Migrate any remaining configurations to blobstore_type: storage-cli.
+:::
+
+
+This document describes the following blobstore configurations:
+
+* [Storage CLI with AWS Credentials](#storage-cli-aws)
+* [Storage CLI with AWS Server-Side Encryption](#storage-cli-aws-sse)
+* [Storage CLI with AWS IAM Instance Profiles](#storage-cli-aws-iam)
+* [Storage CLI with S3-Compatible Stores](#storage-cli-s3-compatible)
+* [Storage CLI with Google Cloud Storage](#storage-cli-gcs)
+* [Storage CLI with Azure Storage](#storage-cli-azure)
+* [Storage CLI with AliCloud Object Storage Service](#storage-cli-alicloud)
+* [WebDAV](#webdav) (internal blobstore, `cf-deployment` default)
+
+## Storage CLI with AWS Credentials {#storage-cli-aws}
+To use the Storage CLI blobstore interface with AWS credentials, do the following:
+
+1. Insert the following configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-AWS-BUILDPACK-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-BUILDPACK-BUCKET
+      droplets:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-AWS-DROPLET-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-DROPLET-BUCKET
+      packages:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-AWS-PACKAGE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-PACKAGE-BUCKET
+      resource_pool:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-AWS-RESOURCE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-RESOURCE-BUCKET
+    ```
+1. Replace `AWS-ACCESS-KEY` and `AWS-SECRET-ACCESS-KEY` with your AWS credentials. Replace `AWS-REGION` with the region of your AWS buckets.
+
+1. Replace `YOUR-AWS-BUILDPACK-BUCKET`, `YOUR-AWS-DROPLET-BUCKET`, `YOUR-AWS-PACKAGE-BUCKET`, and `YOUR-AWS-RESOURCE-BUCKET` with the names of your AWS buckets. Do not use periods (`.`) in your AWS bucket names. In the AWS console, you must assign your credentials an IAM policy that allows all S3 actions on all of these buckets.
+
+1. (Optional) Provide additional configuration through the `connection_config` hash, which is passed through to the Storage CLI. For more information about configuration options, see the [S3-Specific Configuration][storage-cli-s3-options].
+
+## Storage CLI with AWS Server-Side Encryption {#storage-cli-aws-sse}
+AWS S3 offers Server-Side Encryption at rest. For more information, see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html">Protecting Data Using Server-Side Encryption</a>.
+
+<strong>AWS SSE-S3 blobstore encryption</strong>
+
+1. Insert the following configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-AWS-BUILDPACK-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-BUILDPACK-BUCKET
+          server_side_encryption: AES256
+      droplets:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-AWS-DROPLET-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-DROPLET-BUCKET
+          server_side_encryption: AES256
+      packages:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-AWS-PACKAGE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-PACKAGE-BUCKET
+          server_side_encryption: AES256
+      resource_pool:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-AWS-RESOURCE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-RESOURCE-BUCKET
+          server_side_encryption: AES256
+    ```
+
+1. Replace `AWS-ACCESS-KEY` and `AWS-SECRET-ACCESS-KEY` with your AWS credentials. Replace `AWS-REGION` with the region of your AWS buckets.
+
+1. Replace `YOUR-AWS-BUILDPACK-BUCKET`, `YOUR-AWS-DROPLET-BUCKET`, `YOUR-AWS-PACKAGE-BUCKET`, and `YOUR-AWS-RESOURCE-BUCKET` with the names of your AWS buckets. Do not use periods (`.`) in your AWS bucket names. In the AWS console, you must assign your credentials an IAM policy that allows all S3 actions on all of these buckets.
+
+1. Set the value of the `server_side_encryption` key to a type of encryption algorithm. In the configuration information above, `server_side_encryption` is set to `AES256` to enable AWS SSE-S3 encryption.
+
+1. (Optional) Provide additional configuration through the `connection_config` hash, which is passed through to the Storage CLI. For more information about configuration options, see the [S3-Specific Configuration][storage-cli-s3-options].
+
+<strong>AWS SSE-KMS blobstore encryption</strong>
+
+1. Obtain your KMS Key ID. For information about managing KMS keys, see the <a href="http://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html">AWS Key Management Service Getting Started guide.</a>
+
+1. Insert the following configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-AWS-BUILDPACK-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-BUILDPACK-BUCKET
+          server_side_encryption: "aws:kms"
+          x-amz-server-side-encryption-aws-kms-key-id: YOUR-AWS-KMS-KEY-ID
+      droplets:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-AWS-DROPLET-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-DROPLET-BUCKET
+          server_side_encryption: "aws:kms"
+          x-amz-server-side-encryption-aws-kms-key-id: YOUR-AWS-KMS-KEY-ID
+      packages:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-AWS-PACKAGE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-PACKAGE-BUCKET
+          server_side_encryption: "aws:kms"
+          x-amz-server-side-encryption-aws-kms-key-id: YOUR-AWS-KMS-KEY-ID
+      resource_pool:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-AWS-RESOURCE-BUCKET
+        connection_config:
+          aws_access_key_id: AWS-ACCESS-KEY
+          aws_secret_access_key: AWS-SECRET-ACCESS-KEY
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-RESOURCE-BUCKET
+          server_side_encryption: "aws:kms"
+          x-amz-server-side-encryption-aws-kms-key-id: YOUR-AWS-KMS-KEY-ID
+    ```
+
+1. Replace `AWS-ACCESS-KEY` and `AWS-SECRET-ACCESS-KEY` with your AWS credentials. Replace `AWS-REGION` with the region of your AWS buckets.
+
+1. Replace `YOUR-AWS-BUILDPACK-BUCKET`, `YOUR-AWS-DROPLET-BUCKET`, `YOUR-AWS-PACKAGE-BUCKET`, and `YOUR-AWS-RESOURCE-BUCKET` with the names of your AWS buckets.  Do not use periods (`.`) in your AWS bucket names. In the AWS console, you must assign your credentials an IAM policy that allows all S3 actions on all of these buckets.
+
+1. Set the `server_side_encryption` key to the value `aws:kms`. Replace `YOUR-AWS-KMS-KEY-ID` with your KMS Key ID.
+
+1. (Optional) Provide additional configuration through the `connection_config` hash, which is passed through to the Storage CLI. For more information about configuration options, see the [S3-Specific Configuration][storage-cli-s3-options].
+
+## Storage CLI with AWS IAM Instance Profiles {#storage-cli-aws-iam}
+To configure the Storage CLI to use <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html">AWS IAM Instance Profiles</a>, do the following:
+
+1. Configure an additional <code>cloud-controller</code> IAM role with the following policy to give access to the S3 buckets you plan to use:
+
+    ```
+    {
+      "Version": "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Action": [ "s3:*" ],
+        "Resource": [
+          "arn:aws:s3:::YOUR-AWS-BUILDPACK-BUCKET",
+          "arn:aws:s3:::YOUR-AWS-BUILDPACK-BUCKET/*",
+          "arn:aws:s3:::YOUR-AWS-DROPLET-BUCKET",
+          "arn:aws:s3:::YOUR-AWS-DROPLET-BUCKET/*",
+          "arn:aws:s3:::YOUR-AWS-PACKAGE-BUCKET",
+          "arn:aws:s3:::YOUR-AWS-PACKAGE-BUCKET/*",
+          "arn:aws:s3:::YOUR-AWS-RESOURCE-BUCKET",
+          "arn:aws:s3:::YOUR-AWS-RESOURCE-BUCKET/*"
+        ]
+      }]
+    }
+    ```
+
+    Replace `YOUR-AWS-BUILDPACK-BUCKET`, `YOUR-AWS-DROPLET-BUCKET`, `YOUR-AWS-PACKAGE-BUCKET`, and `YOUR-AWS-RESOURCE-BUCKET` with the names of your AWS buckets. Do not use periods (`.`) in your AWS bucket names.
+
+    If you use the AWS console, an IAM Role is automatically assigned to an IAM Instance Profile with the same name, `cloud-controller`. If you do not use the AWS console, you must create an IAM Instance Profile with a single assigned IAM Role. For more information, see [Step 4: Create an IAM Instance Profile for Your Amazon EC2 Instances](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html) in the AWS documentation.
+
+1. In your [BOSH cloud config](https://bosh.io/docs/cloud-config/), create a [VM extension](https://bosh.io/docs/cloud-config/#vm-extensions) to add the IAM Instance Profile you created to VMs using the extension.
+
+    ```
+    vm_extensions:
+    - cloud_properties:
+        iam_instance_profile: cloud-controller
+      name: cloud-controller-iam
+    ```
+
+1. In your Cloud Foundry deployment manifest, use the `cloud-controller-iam` VM extension you created for the instance groups containing `cloud_controller`, `cloud_controller_worker`, and `cloud_controller_clock`, as in the example below:
+
+    ```
+    instance_groups:
+    ...
+    - name: api
+      ...
+      vm_extensions:
+      - cloud-controller-iam
+    ...
+    - name: cc-worker
+      ...
+      vm_extensions:
+      - cloud-controller-iam
+    ...
+    - name: scheduler
+      ...
+      vm_extensions:
+      - cloud-controller-iam
+    ```
+
+1. Insert the following configuration into your deployment manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-AWS-BUILDPACK-BUCKET
+        connection_config:
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-BUILDPACK-BUCKET
+          use_iam_profile: true
+      droplets:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-AWS-DROPLET-BUCKET
+        connection_config:
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-DROPLET-BUCKET
+          use_iam_profile: true
+      packages:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-AWS-PACKAGE-BUCKET
+        connection_config:
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-PACKAGE-BUCKET
+          use_iam_profile: true
+      resource_pool:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-AWS-RESOURCE-BUCKET
+        connection_config:
+          region: AWS-REGION
+          bucket_name: YOUR-AWS-RESOURCE-BUCKET
+          use_iam_profile: true
+    ```
+
+1. Replace `AWS-REGION` with the region of your AWS buckets.
+
+1. Replace `YOUR-AWS-BUILDPACK-BUCKET`, `YOUR-AWS-DROPLET-BUCKET`, `YOUR-AWS-PACKAGE-BUCKET`, and `YOUR-AWS-RESOURCE-BUCKET` with the names of your AWS buckets. Do not use periods (`.`) in your AWS bucket names.
+
+1. (Optional) Provide additional configuration through the `connection_config` hash, which is passed through to the Storage CLI. For more information about configuration options, see the [S3-Specific Configuration][storage-cli-s3-options].
+
+## Storage CLI with S3-Compatible Stores {#storage-cli-s3-compatible}
+The Storage CLI `s3` provider also supports S3-compatible object stores, such as Minio, EMC Elastic Cloud Storage, and similar implementations. The configuration is similar to the AWS configuration, but specifies a custom endpoint instead of relying on AWS region defaults.
+
+1. Insert the following configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-S3-BUILDPACK-BUCKET
+        connection_config: &s3_connection_config
+          aws_access_key_id: S3-ACCESS-KEY
+          aws_secret_access_key: S3-SECRET-ACCESS-KEY
+          host: S3-HOST
+          port: S3-PORT
+          use_ssl: true
+          region: ''
+          host_style: false
+          bucket_name: YOUR-S3-BUILDPACK-BUCKET
+      droplets:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-S3-DROPLET-BUCKET
+        connection_config:
+          <<: *s3_connection_config
+          bucket_name: YOUR-S3-DROPLET-BUCKET
+      packages:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-S3-PACKAGE-BUCKET
+        connection_config:
+          <<: *s3_connection_config
+          bucket_name: YOUR-S3-PACKAGE-BUCKET
+      resource_pool:
+        blobstore_provider: s3
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-S3-RESOURCE-BUCKET
+        connection_config:
+          <<: *s3_connection_config
+          bucket_name: YOUR-S3-RESOURCE-BUCKET
+    ```
+
+1. Replace `S3-HOST` with the host name of your S3 API endpoint, for example `s3.example.com` or `minio.internal`. Set `S3-PORT` to the port (typically `443` for HTTPS or `80` for HTTP). Set `use_ssl: false` if your endpoint does not use TLS.
+
+1. Replace `S3-ACCESS-KEY` and `S3-SECRET-ACCESS-KEY` with credentials that have access to all S3 operations on the buckets configured below.
+
+1. Replace `YOUR-S3-BUILDPACK-BUCKET`, `YOUR-S3-DROPLET-BUCKET`, `YOUR-S3-PACKAGE-BUCKET`, and `YOUR-S3-RESOURCE-BUCKET` with the names of your buckets. Do not use periods (`.`) in your bucket names.
+
+1. (Optional) Adjust `host_style` to `true` if your provider requires virtual-hosted–style access rather than path-style access.
+
+1. (Optional) Provide additional configuration through the `connection_config` hash, which is passed through to the Storage CLI. For more information about configuration options, see the [S3-Specific Configuration][storage-cli-s3-options].
+
+## Storage CLI with Google Cloud Storage {#storage-cli-gcs}
+To configure your blobstore to use Google Cloud Storage with a service account, do the following:
+
+1. Create a custom Cloud IAM role with the following permissions:
+
+    ```
+    storage.buckets.create
+    storage.buckets.get
+    storage.objects.create
+    storage.objects.delete
+    storage.objects.get
+    storage.objects.list
+    ```
+
+    To create the custom role, follow the [Creating and Managing Custom Roles](https://cloud.google.com/iam/docs/creating-custom-roles) instructions in the GCP documentation. This role will be used for blobstore permissions.
+
+1. Create a service account by following the [Creating and Managing Service Accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts) instructions in the GCP documentation and grant this service account the role you created in Step 1.
+For additional information about granting roles to an existing service account, see [Granting Roles to a Service Account for Specific Resources](https://cloud.google.com/iam/docs/granting-roles-to-service-accounts#granting_access_to_a_service_account_for_a_resource) in the GCP documentation.
+
+1. Create a service account JSON key for your service account by following the [Creating and Managing Service Account Keys](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) instructions in the GCP documentation.
+You need this key to configure your blobstore.
+
+1. Insert the following configuration in your manifest under `properties.cc` for the `cloud_controller_ng` job:
+
+    ```
+    cc:
+      buildpacks: &buildpacks
+        blobstore_type: storage-cli
+        blobstore_provider: gcs
+        buildpack_directory_key: YOUR-GCS-BUILDPACK-BUCKET
+        connection_config:
+          bucket_name: YOUR-GCS-BUILDPACK-BUCKET
+          google_json_key_string: >
+            {
+              "type": "service_account",
+              "project_id": "YOUR-GCS-PROJECT",
+              ...
+            }
+      droplets: &droplets
+        blobstore_type: storage-cli
+        blobstore_provider: gcs
+        droplet_directory_key: YOUR-GCS-DROPLET-BUCKET
+        connection_config:
+          bucket_name: YOUR-GCS-DROPLET-BUCKET
+          google_json_key_string: >
+            {
+              "type": "service_account",
+              "project_id": "YOUR-GCS-PROJECT",
+              ...
+            }
+      packages: &packages
+        blobstore_type: storage-cli
+        blobstore_provider: gcs
+        app_package_directory_key: YOUR-GCS-PACKAGE-BUCKET
+        connection_config:
+          bucket_name: YOUR-GCS-PACKAGE-BUCKET
+          google_json_key_string: >
+            {
+              "type": "service_account",
+              "project_id": "YOUR-GCS-PROJECT",
+              ...
+            }
+      resource_pool: &resource_pool
+        blobstore_type: storage-cli
+        blobstore_provider: gcs
+        resource_directory_key: YOUR-GCS-RESOURCE-BUCKET
+        connection_config:
+          bucket_name: YOUR-GCS-RESOURCE-BUCKET
+          google_json_key_string: >
+            {
+              "type": "service_account",
+              "project_id": "YOUR-GCS-PROJECT",
+              ...
+            }
+    ```
+
+    Replace the placeholders as follows:
+    * `YOUR-GCS-PROJECT` is the name of your GCP project.
+    * `YOUR-GCS-BUILDPACK-BUCKET`, `YOUR-GCS-DROPLET-BUCKET`,<br/>`YOUR-GCS-PACKAGE-BUCKET`, and `YOUR-GCS-RESOURCE-BUCKET` are the names of your Cloud Storage buckets.
+    Do not use periods in the bucket names.
+
+    In `google_json_key_string`, provide your Cloud Storage credentials. Use spaces, not tabs, for indentation.
+
+1. To update the `cloud_controller_worker` and `cloud_controller_clock` jobs with the same blobstore configuration, insert the following for both jobs under `properties.cc`:
+
+    ```
+    cc:
+      # note these reference YAML anchors declared in the previous step
+      buildpacks: *buildpacks
+      droplets: *droplets
+      packages: *packages
+      resource_pool: *resource_pool
+    ```
+
+
+:::note
+Note: Google Cloud Storage interoperability HMAC keys are no longer supported. Use a service-account JSON key as shown above.
+:::
+
+
+## Storage CLI with Azure Storage {#storage-cli-azure}
+To configure your blobstores to use Azure Storage credentials, do the following:
+
+1. Insert the following configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: azurebs
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-AZURE-BUILDPACK-CONTAINER
+        connection_config:
+          azure_storage_access_key: YOUR-AZURE-STORAGE-ACCESS-KEY
+          azure_storage_account_name: YOUR-AZURE-STORAGE-ACCOUNT-NAME
+          container_name: YOUR-AZURE-BUILDPACK-CONTAINER
+          environment: AzureCloud
+      droplets:
+        blobstore_provider: azurebs
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-AZURE-DROPLET-CONTAINER
+        connection_config:
+          azure_storage_access_key: YOUR-AZURE-STORAGE-ACCESS-KEY
+          azure_storage_account_name: YOUR-AZURE-STORAGE-ACCOUNT-NAME
+          container_name: YOUR-AZURE-DROPLET-CONTAINER
+          environment: AzureCloud
+      packages:
+        blobstore_provider: azurebs
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-AZURE-PACKAGE-CONTAINER
+        connection_config:
+          azure_storage_access_key: YOUR-AZURE-STORAGE-ACCESS-KEY
+          azure_storage_account_name: YOUR-AZURE-STORAGE-ACCOUNT-NAME
+          container_name: YOUR-AZURE-PACKAGE-CONTAINER
+          environment: AzureCloud
+      resource_pool:
+        blobstore_provider: azurebs
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-AZURE-RESOURCE-CONTAINER
+        connection_config:
+          azure_storage_access_key: YOUR-AZURE-STORAGE-ACCESS-KEY
+          azure_storage_account_name: YOUR-AZURE-STORAGE-ACCOUNT-NAME
+          container_name: YOUR-AZURE-RESOURCE-CONTAINER
+          environment: AzureCloud
+    ```
+
+1. Replace `YOUR-AZURE-STORAGE-ACCOUNT-NAME` and `YOUR-AZURE-STORAGE-ACCESS-KEY` with your Azure Storage credentials.
+
+1. Replace `YOUR-AZURE-BUILDPACK-CONTAINER`, `YOUR-AZURE-DROPLET-CONTAINER`,
+   `YOUR-AZURE-PACKAGE-CONTAINER`, and `YOUR-AZURE-RESOURCE-CONTAINER`
+   with the names of your Cloud Storage containers.
+   Azure container names must consist of
+   only lowercase alphanumeric characters and hyphens.
+   See [Azure's storage name restrictions][azure-name-restrictions].
+
+1. You can provide further configuration through the `connection_config` hash, which is passed through to the [`Storage CLI`](https://github.com/cloudfoundry/storage-cli) implementation.
+
+## Storage CLI with AliCloud Object Storage Service (OSS) {#storage-cli-alicloud}
+To configure an AliCloud OSS blobstore using the storage-cli implementation, do the following:
+
+1. Insert this configuration into your manifest under `properties.cc`:
+
+    ```
+    cc:
+      buildpacks:
+        blobstore_provider: alioss
+        blobstore_type: storage-cli
+        buildpack_directory_key: YOUR-ALICLOUD-BUILDPACK-CONTAINER
+        connection_config:
+          aliyun_accesskey_id: YOUR-ALICLOUD-ACCESSKEY-ID
+          aliyun_accesskey_secret: YOUR-ALICLOUD-ACCESSKEY-SECRET
+          aliyun_oss_bucket: YOUR-ALICLOUD-BUILDPACK-CONTAINER
+          aliyun_oss_endpoint: YOUR-ALICLOUD-OSS-ENDPOINT
+          aliyun_region_id: YOUR-ALICLOUD-REGION-ID
+      droplets:
+        blobstore_provider: alioss
+        blobstore_type: storage-cli
+        droplet_directory_key: YOUR-ALICLOUD-DROPLET-CONTAINER
+        connection_config:
+          aliyun_accesskey_id: YOUR-ALICLOUD-ACCESSKEY-ID
+          aliyun_accesskey_secret: YOUR-ALICLOUD-ACCESSKEY-SECRET
+          aliyun_oss_bucket: YOUR-ALICLOUD-DROPLET-CONTAINER
+          aliyun_oss_endpoint: YOUR-ALICLOUD-OSS-ENDPOINT
+          aliyun_region_id: YOUR-ALICLOUD-REGION-ID
+      packages:
+        blobstore_provider: alioss
+        blobstore_type: storage-cli
+        app_package_directory_key: YOUR-ALICLOUD-PACKAGE-CONTAINER
+        connection_config:
+          aliyun_accesskey_id: YOUR-ALICLOUD-ACCESSKEY-ID
+          aliyun_accesskey_secret: YOUR-ALICLOUD-ACCESSKEY-SECRET
+          aliyun_oss_bucket: YOUR-ALICLOUD-PACKAGE-CONTAINER
+          aliyun_oss_endpoint: YOUR-ALICLOUD-OSS-ENDPOINT
+          aliyun_region_id: YOUR-ALICLOUD-REGION-ID
+      resource_pool:
+        blobstore_provider: alioss
+        blobstore_type: storage-cli
+        resource_directory_key: YOUR-ALICLOUD-RESOURCE-CONTAINER
+        connection_config:
+          aliyun_accesskey_id: YOUR-ALICLOUD-ACCESSKEY-ID
+          aliyun_accesskey_secret: YOUR-ALICLOUD-ACCESSKEY-SECRET
+          aliyun_oss_bucket: YOUR-ALICLOUD-RESOURCE-CONTAINER
+          aliyun_oss_endpoint: YOUR-ALICLOUD-OSS-ENDPOINT
+          aliyun_region_id: YOUR-ALICLOUD-REGION-ID
+    ```
+
+1. Replace `YOUR-ALICLOUD-ACCESSKEY-ID` and `YOUR-ALICLOUD-ACCESSKEY-SECRET` with your AliCloud OSS credentials.
+
+1. Replace `YOUR-ALICLOUD-BUILDPACK-CONTAINER`, `YOUR-ALICLOUD-DROPLET-CONTAINER`, `YOUR-ALICLOUD-PACKAGE-CONTAINER`, and `YOUR-ALICLOUD-RESOURCE-CONTAINER` with the names of your AliCloud OSS buckets. For the bucket naming restrictions, see [Bucket naming conventions][alicloud-name-restrictions].
+
+1. Replace `YOUR-ALICLOUD-OSS-ENDPOINT` and `YOUR-ALICLOUD-REGION-ID` with the endpoint and region of your AliCloud OSS buckets. For more information, see [Regions and endpoints][alicloud-regions-and-endpoints] in the AliCloud documentation.
+
+## WebDAV {#webdav}
+WebDAV is the internal blobstore used by `cf-deployment` by default. The capi-release `blobstore` BOSH job runs an nginx-based WebDAV server inside the deployment, and the Cloud Controller talks to it through the storage-cli `dav` provider. This setup is well suited for development, test, and small-scale environments. For production environments, a highly available external blobstore (see the storage-cli sections above) is recommended.
+
+To configure your blobstore to use WebDAV, do the following:
+
+1. Ensure your deployment manifest has a single instance of the `blobstore` job.
+
+1. Insert the following configuration into your manifest under `properties.blobstore` and `properties.cc`:
+
+    ```
+    blobstore:
+      admin_users:
+      - password: WEBDAV-BASIC-AUTH-PASSWORD
+        username: WEBDAV-BASIC-AUTH-USER
+      port: 8080
+      secure_link:
+        secret: WEBDAV-SECRET
+      tls:
+        cert: WEBDAV-CERT
+        port: 4443
+        private_key: WEBDAV-PRIVATE-KEY
+        ca_cert: WEBDAV-CA-CERT-BUNDLE
+    cc:
+      buildpacks:
+        blobstore_type: storage-cli
+        blobstore_provider: dav
+        buildpack_directory_key: cc-buildpacks
+        connection_config: &webdav_connection_config
+          username: WEBDAV-BASIC-AUTH-USER
+          password: WEBDAV-BASIC-AUTH-PASSWORD
+          private_endpoint: https://blobstore.service.cf.internal:4443
+          public_endpoint: https://blobstore.SYSTEM-DOMAIN
+          secret: WEBDAV-SECRET
+          ca_cert: WEBDAV-CA-CERT-BUNDLE
+      droplets:
+        blobstore_type: storage-cli
+        blobstore_provider: dav
+        droplet_directory_key: cc-droplets
+        connection_config: *webdav_connection_config
+      packages:
+        blobstore_type: storage-cli
+        blobstore_provider: dav
+        app_package_directory_key: cc-packages
+        connection_config: *webdav_connection_config
+      resource_pool:
+        blobstore_type: storage-cli
+        blobstore_provider: dav
+        resource_directory_key: cc-resources
+        connection_config: *webdav_connection_config
+    ```
+
+1. Configure your WebDAV blobstore by doing the following:
+      * Replace <code>WEBDAV-BASIC-AUTH-USER</code> and <code>WEBDAV-BASIC-AUTH-PASSWORD</code> with the Basic Auth credentials that the Cloud Controller uses to communicate with your WebDAV installation.
+      * Replace <code>WEBDAV-SECRET</code> with a secret phrase used to sign URLs.
+      * Replace <code>WEBDAV-CERT</code>, <code>WEBDAV-PRIVATE-KEY</code>, and <code>WEBDAV-CA-CERT-BUNDLE</code> with the TLS configuration used by the internal blobstore.
+      * Set <code>private_endpoint</code> to a routable URL on your internal network. The default is `https://blobstore.service.cf.internal:4443`.
+      * (Optional) Set <code>public_endpoint</code> to the public URL that resolves to your WebDAV installation, for example `https://blobstore.SYSTEM-DOMAIN`. This is used for signed public URLs.
+
+
+:::note
+Note: The legacy blobstore_type: webdav form is no longer supported. Use the storage-cli + dav configuration shown above.
+:::
+
+
+[azure-name-restrictions]: https://docs.microsoft.com/en-us/azure/architecture/best-practices/naming-conventions#storage
+[alicloud-name-restrictions]: https://www.alibabacloud.com/help/en/oss/user-guide/bucket-naming-conventions
+[alicloud-regions-and-endpoints]: https://www.alibabacloud.com/help/en/oss/user-guide/regions-and-endpoints
+[storage-cli-s3-options]: https://github.com/cloudfoundry/storage-cli/tree/main/s3
