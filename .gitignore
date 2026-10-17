@@ -4,3 +4,4 @@
 /.cache-loader
 .DS_Store
 migration-report.txt
+.superpowers/

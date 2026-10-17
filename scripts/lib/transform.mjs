@@ -10,12 +10,18 @@ export function stripErbComments(text) {
     .replace(/\n{3,}/g, '\n\n');
 }
 
+// Admonition kind for a legacy `<p class="note ...">` class, or '' if not a note.
+export function noteKindFromClass(cls) {
+  if (cls === 'warning') return 'warning';
+  if (!/^note/.test(cls)) return '';
+  if (/\bimportant\b/.test(cls)) return 'info';
+  if (/\bcaution\b/.test(cls)) return 'caution';
+  return 'note';
+}
+
 export function rewriteNoteBlocks(text) {
   return text.replace(/<p class="(note[^"]*|warning)">([\s\S]*?)<\/p>/g, (_, cls, inner) => {
-    let kind = 'note';
-    if (cls === 'warning') kind = 'warning';
-    else if (/\bimportant\b/.test(cls)) kind = 'info';
-    else if (/\bcaution\b/.test(cls)) kind = 'caution';
+    const kind = noteKindFromClass(cls);
     const body = inner
       .replace(/<span class="note__title">[\s\S]*?<\/span>/g, '')
       .replace(/<strong>\s*(Note|Warning|Important|Caution)\s*<\/strong>/gi, '')

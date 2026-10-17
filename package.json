@@ -11,6 +11,8 @@
     "gen:vars": "node scripts/gen-vars.mjs",
     "gen:sidebar": "node scripts/gen-sidebar.mjs",
     "migrate": "node scripts/migrate.mjs",
+    "scrape": "node scripts/scrape.mjs",
+    "test": "node --test scripts/tests/*.test.mjs",
     "gen:all": "npm run gen:vars && npm run migrate && npm run gen:sidebar"
   },
   "dependencies": {

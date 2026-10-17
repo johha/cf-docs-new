@@ -49,3 +49,82 @@
   border: 1px solid var(--ifm-color-emphasis-100);
 }
 
+
+/* Scraped result tables (scripts/scrape.mjs): light header, accent edge on the
+   first cell (red = latency found, green = none), stacked cards on mobile. */
+.cf-table {
+  margin-bottom: var(--ifm-spacing-vertical);
+}
+.cf-table table {
+  display: table;
+  width: 100%;
+  margin-bottom: 0;
+  border: 0;
+}
+.cf-table th {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.cf-table td {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  vertical-align: top;
+}
+.cf-table tr:nth-child(even) td {
+  background: transparent;
+}
+.cf-table td:first-child {
+  width: 28%;
+  font-weight: 600;
+  border-left: 4px solid var(--ifm-color-primary);
+}
+.cf-table td:has(.cf-r--bad) { border-left-color: #d9534f; }
+.cf-table td:has(.cf-r--ok) { border-left-color: #3aa655; }
+
+@media (max-width: 700px) {
+  .cf-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .cf-table table,
+  .cf-table tbody,
+  .cf-table tr,
+  .cf-table td {
+    display: block;
+    width: 100%;
+  }
+  .cf-table tr {
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .cf-table td {
+    border-bottom: 0;
+  }
+  .cf-table td:first-child {
+    width: 100%;
+    border-left-width: 4px;
+  }
+  .cf-table td:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--ifm-color-emphasis-600);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .cf-table td:last-child {
+    background: var(--ifm-color-emphasis-100);
+  }
+}

@@ -12,6 +12,7 @@ const config = {
   projectName: 'cf-docs-new',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+  clientModules: ['./src/clientModules/tableLabels.js'],
   presets: [
     ['classic', /** @type {import('@docusaurus/preset-classic').Options} */ ({
       // exclude the SDD spec/plan markdown under docs/superpowers from doc routes
