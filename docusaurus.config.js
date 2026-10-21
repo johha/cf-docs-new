@@ -19,7 +19,7 @@ const config = {
       docs: {
         sidebarPath: './sidebars.js',
         routeBasePath: '/',
-        exclude: ['superpowers/**', '**/_partials/**'],
+        exclude: ['superpowers/**', '**/_partials/**', '**/subnav-index.*', '**/archive/**', '**/common/**', '**/cf-deployment/**'],
       },
       blog: false,
       theme: { customCss: './src/css/custom.css' },
@@ -52,7 +52,7 @@ const config = {
       title: 'Documentation',
       // Official current Cloud Foundry logo (wordmark + mark) from cloudfoundry.org.
       logo: { alt: 'Cloud Foundry', src: 'img/cf-logo-vertical.png' },
-      items: [{ type: 'docSidebar', sidebarId: 'conceptsSidebar', position: 'left', label: 'Concepts' }],
+      items: [],
     },
     footer: {
       style: 'dark',
